@@ -1,5 +1,0 @@
-CREATE TABLE product (
-  id BIGINT AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(100),
-  price DECIMAL(12,2)
-);
