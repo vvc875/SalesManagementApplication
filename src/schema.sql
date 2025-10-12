@@ -1,0 +1,61 @@
+SET FOREIGN_KEY_CHECKS = 0; 
+CREATE TABLE Customer(
+	id VARCHAR(20) PRIMARY KEY NOT NULL UNIQUE,
+    name VARCHAR(255) NOT NULL,
+    phone VARCHAR(20) UNIQUE,
+    address VARCHAR(255),
+    email VARCHAR(255) UNIQUE
+);
+CREATE TABLE Employee(
+	id VARCHAR(20) PRIMARY KEY NOT NULL UNIQUE,
+    name VARCHAR(255) NOT NULL,
+    position VARCHAR(100) NOT NULL,
+    phone VARCHAR(20) NOT NULL UNIQUE,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    salary DECIMAL(10, 2) NOT NULL,
+    hire_date DATE NOT NULL,
+    address VARCHAR(255) NOT NULL
+);
+CREATE TABLE Category(
+	id VARCHAR(20) PRIMARY KEY NOT NULL UNIQUE,
+    name VARCHAR(100) NOT NULL UNIQUE
+);
+CREATE TABLE Product(
+	id VARCHAR(20) PRIMARY KEY NOT NULL UNIQUE,
+    name VARCHAR(255) NOT NULL UNIQUE,
+    price DECIMAL(10, 2) NOT NULL,
+    quantity INT NOT NULL,
+    description TEXT,
+    category_id VARCHAR(20) NOT NULL,
+	FOREIGN KEY(category_id)
+		REFERENCES Category(id)
+        ON DELETE RESTRICT
+);
+CREATE TABLE Orders(
+	id VARCHAR(20) PRIMARY KEY NOT NULL UNIQUE,
+    order_date DATETIME,
+    total_amount DOUBLE,
+    status VARCHAR(50),
+    customer_id VARCHAR(20) NOT NULL,
+    employee_id VARCHAR(20),
+    FOREIGN KEY (customer_id) 
+        REFERENCES Customer(id) 
+        ON DELETE RESTRICT,
+    FOREIGN KEY (employee_id) 
+        REFERENCES Employee(id) 
+        ON DELETE SET NULL
+);
+CREATE TABLE Order_Detail(
+    order_id VARCHAR(20) NOT NULL,
+    product_id VARCHAR(20) NOT NULL,
+    quantity INT NOT NULL,
+    price DECIMAL(10, 2) NOT NULL,
+    PRIMARY KEY (order_id, product_id),
+    FOREIGN KEY(order_id)
+		REFERENCES orders(id)
+        ON DELETE CASCADE,
+	FOREIGN KEY(product_id)
+		REFERENCES product(id)
+        ON DELETE RESTRICT
+);
+SET FOREIGN_KEY_CHECKS = 1;
