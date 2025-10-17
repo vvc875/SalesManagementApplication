@@ -34,7 +34,7 @@ CREATE TABLE Product(
 CREATE TABLE Orders(
 	id VARCHAR(20) PRIMARY KEY NOT NULL UNIQUE,
     order_date DATETIME,
-    total_amount DOUBLE,
+    total_amount DECIMAL(20, 2),
     status VARCHAR(50),
     customer_id VARCHAR(20) NOT NULL,
     employee_id VARCHAR(20),
@@ -46,16 +46,16 @@ CREATE TABLE Orders(
         ON DELETE SET NULL
 );
 CREATE TABLE Order_Detail(
+	id VARCHAR(20) PRIMARY KEY NOT NULL UNIQUE,
     order_id VARCHAR(20) NOT NULL,
     product_id VARCHAR(20) NOT NULL,
     quantity INT NOT NULL,
     price DECIMAL(10, 2) NOT NULL,
-    PRIMARY KEY (order_id, product_id),
     FOREIGN KEY(order_id)
-		REFERENCES orders(id)
+		REFERENCES Orders(id)
         ON DELETE CASCADE,
 	FOREIGN KEY(product_id)
-		REFERENCES product(id)
+		REFERENCES Product(id)
         ON DELETE RESTRICT
 );
 SET FOREIGN_KEY_CHECKS = 1;
