@@ -1,6 +1,7 @@
 package com.example.sales.controller;
 
 import com.example.sales.entity.Customer;
+import com.example.sales.entity.Order;
 import com.example.sales.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -8,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/customer")
+@RequestMapping("/customer")
 public class CustomerController {
     @Autowired
     private CustomerService customerService;
@@ -23,13 +24,18 @@ public class CustomerController {
         return customerService.getTotalCustomers();
     }
 
+    @GetMapping("/{customerId}/order")
+    List<Order> getCustomerOrder(@PathVariable("customerId") String customerId){
+        return customerService.getOrderHistory(customerId);
+    }
+
     @PostMapping
     Customer addCustomer(@RequestBody Customer customer){
         return customerService.addCustomer(customer);
     }
 
     @PutMapping("/{customerId}")
-    Customer updateCustomer(@RequestBody Customer customer, @PathVariable("customerId") Long customerId){
+    Customer updateCustomer(@RequestBody Customer customer, @PathVariable("customerId") String customerId){
         return customerService.updateCustomer(customerId, customer);
     }
 
@@ -39,7 +45,7 @@ public class CustomerController {
     }
 
     @DeleteMapping("/{customerId}")
-    String deleteCustomer(@PathVariable("customerId") Long customerId){
+    String deleteCustomer(@PathVariable("customerId") String customerId){
         customerService.deleteCustomer(customerId);
         return "delete customer successfully";
     }

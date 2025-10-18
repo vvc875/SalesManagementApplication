@@ -13,25 +13,41 @@ public class CategoryService {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    //Lấy tất cả danh mục sản phẩm
     public List<Category> getAllCategory(){
         return categoryRepository.findAll();
     }
 
-    public Category getCategoryById(Long id) {
+    //Lấy danh mục sản phẩm theo id
+    public Category getCategoryById(String id) {
         return categoryRepository.findById(id).orElseThrow(()-> new RuntimeException("Không tìm thấy danh mục sản phẩm!"));
     }
 
+    private String generateCategoryId() {
+        List<String> ids = categoryRepository.findAllIdsDesc();
+        if (ids.isEmpty()) return "CAT001";
+
+        String lastId = ids.get(0);
+        int num = Integer.parseInt(lastId.replace("CAT", ""));
+        return String.format("CAT%03d", num + 1);
+    }
+
+    //Thêm một danh mục sản phẩm mới
     public Category addCategory(Category category) {
+        category.setId(generateCategoryId());
         return categoryRepository.save(category);
     }
 
-    public Category updateCategory(Long id, Category category){
-        Category existingCategory = getCategoryById(id);
+    //Cập nhật danh mục sản phẩm
+    public Category updateCategory(String id, Category category) {
+        Category existingCategory = categoryRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy danh mục có ID: " + id));
         existingCategory.setName(category.getName());
         return categoryRepository.save(existingCategory);
     }
 
-    public void deleteCategory(Long id){
+    // Xoá một danh mục sản phẩm
+    public void deleteCategory(String id){
         if(!categoryRepository.existsById(id)){
             throw new RuntimeException("không tồn tại danh mục");
         }

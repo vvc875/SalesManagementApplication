@@ -12,16 +12,16 @@ import java.time.LocalDate;
 public class Employee {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;               // Mã nhân viên (tự tăng)
+    @Column(name="employee_id")
+    private String id;
 
-    private String name;           // Họ tên nhân viên
-    private String position;       // Chức vụ (VD: Nhân viên bán hàng, Quản lý, v.v.)
-    private String phone;          // Số điện thoại
-    private String email;          // Email liên hệ
-    private Double salary;         // Lương cơ bản
-    private LocalDate hireDate;    // Ngày vào làm
+    private String name;
+    private String position;
+    private String phone;
+    private String email;
+    private Double salary;
+    private LocalDate hireDate;
 
     @Column(length = 255)
-    private String address;        // Địa chỉ
+    private String address;
 }

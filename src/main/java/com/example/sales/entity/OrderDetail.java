@@ -5,6 +5,8 @@ import com.example.sales.entity.Order;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Entity
@@ -12,17 +14,17 @@ import lombok.Setter;
 public class OrderDetail {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name="orderdetail_id")
+    private String id;
 
-    private Integer quantity;      // Số lượng sản phẩm
-    private Double price;          // Giá tại thời điểm đặt hàng
+    private Integer quantity;
+    private Double price;
 
     @ManyToOne
     @JoinColumn(name = "order_id")
-    private Order order;           // Thuộc đơn hàng nào
+    private Order order;
 
     @ManyToOne
     @JoinColumn(name = "product_id")
-    private Product product;       // Sản phẩm nào
+    private Product product;
 }

@@ -1,5 +1,7 @@
 package com.example.sales.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,20 +15,24 @@ import java.util.List;
 public class Order {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name="order_id")
+    private String id;
 
-    private LocalDate orderDate;   // Ngày đặt hàng
-    private Double totalAmount;    // Tổng tiền đơn hàng
+    private LocalDate orderDate;
+    private Double totalAmount;
+    private String status;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER) // <-- QUAN TRỌNG: EAGER để load luôn thông tin customer
     @JoinColumn(name = "customer_id")
-    private Customer customer;     // Khách hàng đặt đơn
+    @JsonIgnore
+    private Customer customer;
 
     @ManyToOne
     @JoinColumn(name = "employee_id")
-    private Employee employee;     // Nhân viên phụ trách
+    @JsonIgnore
+    private Employee employee;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    private List<OrderDetail> orderDetails; // Chi tiết đơn hàng
+    @JsonIgnore
+    private List<OrderDetail> orderDetails;
 }

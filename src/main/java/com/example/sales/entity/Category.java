@@ -9,17 +9,16 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-@Table(name = "category")
+@Table(name = "Category")
 public class Category {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "category_id")
+    private String id;
 
-    private String name;            // Tên danh mục
-//    private String description;     // Mô tả danh mục
+    private String name;
 
     @OneToMany(mappedBy = "category")
     @JsonIgnore
-    private List<Product> products; // Danh sách sản phẩm thuộc danh mục
+    private List<Product> products;
 }
