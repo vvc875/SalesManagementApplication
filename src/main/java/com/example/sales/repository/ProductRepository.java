@@ -10,7 +10,8 @@ import java.util.List;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, String> {
-    @Query("SELECT p FROM Product p")
+
+    @Query(value = "SELECT * FROM Product", nativeQuery = true)
     List<Product> getAllProduct();
 
     @Query("SELECT p FROM Product p WHERE LOWER(p.name) LIKE LOWER(CONCAT('%', :keyword, '%'))")
@@ -27,4 +28,5 @@ public interface ProductRepository extends JpaRepository<Product, String> {
 
     @Query("SELECT p.id FROM Product p ORDER BY p.id DESC")
     List<String> findAllIdsDesc();
+
 }

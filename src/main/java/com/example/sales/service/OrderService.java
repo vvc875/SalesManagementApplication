@@ -71,18 +71,18 @@ public class OrderService {
         orderRepository.save(order);
     }
 
-    // YÊU CẦU: Xem danh sách đơn hàng
+    // Xem danh sách đơn hàng
     public List<Order> getAllOrder(){
         return orderRepository.findAll();
     }
 
-    // YÊU CẦU: Xem chi tiết một đơn hàng
+    // Xem chi tiết một đơn hàng
     public Order getOrderById(String orderId) {
         return orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy đơn hàng với ID: " + orderId));
     }
 
-    // ... các hàm khác bạn có thể giữ lại hoặc thêm vào ...
+    // xoá một một đơn hàng
     public void deleteOrder(String id) {
         if (!orderRepository.existsById(id)) {
             throw new RuntimeException("Không tìm thấy đơn hàng để xóa!");
