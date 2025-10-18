@@ -44,6 +44,11 @@ public class CustomerController {
         return customerService.searchCustomers(keyword);
     }
 
+    @GetMapping("/{customerId}")
+    public Customer getCustomerById(@PathVariable("customerId") String customerId) {
+        return customerService.getCustomerById(customerId);
+    }
+
     @DeleteMapping("/{customerId}")
     String deleteCustomer(@PathVariable("customerId") String customerId){
         customerService.deleteCustomer(customerId);
