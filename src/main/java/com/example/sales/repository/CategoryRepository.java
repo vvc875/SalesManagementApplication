@@ -17,10 +17,10 @@ public interface CategoryRepository extends JpaRepository<Category, String> {
     @Query(value = "SELECT * FROM Category ", nativeQuery = true)
     List<Category> findAll();
 
-    @Query(value = "SELECT * FROM category WHERE category_id = :id", nativeQuery = true)
+    @Query(value = "SELECT * FROM Category WHERE category_id = :id", nativeQuery = true)
     Optional<Category> findById(@Param("id") String id);
 
-    @Query(value = "SELECT category_id FROM category ORDER BY category_id DESC", nativeQuery = true)
+    @Query(value = "SELECT category_id FROM Category ORDER BY category_id DESC", nativeQuery = true)
     List<String> findAllIdsDesc();
 
     // Cập nhập danh mục sản phẩm
@@ -35,4 +35,6 @@ public interface CategoryRepository extends JpaRepository<Category, String> {
     @Query(value = "DELETE FROM Category WHERE category_id = :id", nativeQuery = true)
     void deleteById(@Param("id") String id);
 
+    @Query(value = "SELECT * FROM category c WHERE LOWER(c.name) = LOWER(:name)", nativeQuery = true)
+    Optional<Category> findByNameIgnoreCase(@Param("name") String name);
 }

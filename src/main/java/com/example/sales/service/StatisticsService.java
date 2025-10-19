@@ -50,3 +50,12 @@ public class StatisticsService {
         return orderRepository.findTopCustomers(PageRequest.of(0, limit));
     }
 }
+/*
+
+    // Top khách hàng mua nhiều nhất
+    @Query(value = "SELECT c.customer_id, c.name, SUM(o.total_amount) AS total " +
+                   "FROM orders o JOIN customer c ON o.customer_id = c.customer_id " +
+                   "GROUP BY c.customer_id, c.name " +
+                   "ORDER BY total DESC \n--#pageable", nativeQuery = true)
+    List<TopCustomerDTO> findTopCustomers(Pageable pageable);
+ */
