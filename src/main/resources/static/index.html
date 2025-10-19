@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trang chủ - Hệ thống quản lý bán hàng</title>
+    <link rel="stylesheet" href="CSS/style.css"> 
+</head>
+<body>
+    <header class="header">
+        <div class="header-top-bar">
+            <div class="container">
+        <h1>HỆ THỐNG QUẢN LÝ BÁN HÀNG</h1>
+            </div>
+        </div>
+        <nav class="header-nav-bar">
+            <div class="container">
+                <ul>
+                    <li><a href="/index.html" class="active">Trang chủ</a></li>
+                    <li><a href="/product_search.html" >Sản phẩm</a></li>
+                    <li><a href="/category_search.html">Danh mục sản phẩm</a></li>
+                    <li><a href="/customer_search.html">Khách hàng</a></li>
+                    <li><a href="/employee_search.html">Nhân viên</a></li>
+                    <li><a href="/order_search.html">Hóa đơn</a></li>
+                    <li><a href="/statistics.html">Thống kê</a></li>
+                    <li><a href="log_out.html">Đăng xuất</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+<main class="main-content">
+    <div class="container">
+        <div class="dashboard-grid">
+
+            <div class="dashboard-item">
+                <div class="stat-card">
+                    <h3>Tổng sản phẩm</h3>
+                    <p id="total-products">120</p>
+                </div>
+                <a href="#" class="action-btn product-btn">Quản lý sản phẩm</a>
+            </div>
+
+            <div class="dashboard-item">
+                <div class="stat-card">
+                    <h3>Tổng khách hàng</h3>
+                    <p id="total-customers">45</p>
+                </div>
+                <a href="#" class="action-btn customer-btn">Quản lý khách hàng</a>
+            </div>
+
+            <div class="dashboard-item">
+                <div class="stat-card">
+                    <h3>Hóa đơn hôm nay</h3>
+                    <p id="today-invoices">8</p>
+                </div>
+                <a href="#" class="action-btn order-btn">Quản lý hóa đơn</a>
+            </div>
+
+            <div class="dashboard-item">
+                <div class="stat-card">
+                    <h3>Doanh thu (VND)</h3>
+                    <p id="today-revenue">15,200,000</p>
+                </div>
+                <a href="#" class="action-btn report-btn">Xem thống kê</a>
+            </div>
+
+        </div> 
+    </div> 
+</main>
+    <footer class="footer">
+        <div class="container">
+            <p>© 2025 Quản lý bán hàng - Nhóm 6</p>
+        </div>
+    </footer>
+
+    <!-- <script src="JS/script.js"></script> -->
+</body>
+</html>
