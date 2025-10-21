@@ -20,7 +20,7 @@ public class OrderDetailService {
     @Autowired private OrderRepository orderRepository;
     @Autowired private ProductRepository productRepository;
     @Autowired private OrderService orderService;
-
+    // ID tu dong
     private String generateOrderDetailId() {
         long count = orderDetailRepository.count();
         return String.format("OD%03d", count + 1);

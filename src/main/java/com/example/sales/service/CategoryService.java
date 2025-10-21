@@ -23,6 +23,7 @@ public class CategoryService {
         return categoryRepository.findById(id).orElseThrow(()-> new RuntimeException("Không tìm thấy danh mục sản phẩm!"));
     }
 
+    // ID tự động thêm vào
     private String generateCategoryId() {
         List<String> ids = categoryRepository.findAllIdsDesc();
         if (ids.isEmpty()) return "CAT001";

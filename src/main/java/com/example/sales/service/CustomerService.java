@@ -67,6 +67,7 @@ public class CustomerService {
         return customerRepository.countTotalCustomers();
     }
 
+    //Lịch sử khách hàng bằng ID
     public List<Order> getOrderHistory(String customerId) {
         getCustomerById(customerId); // Kiểm tra tồn tại
         return orderRepository.findOrdersByCustomerId(customerId);

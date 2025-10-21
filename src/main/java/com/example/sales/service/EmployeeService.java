@@ -23,6 +23,7 @@ public class EmployeeService {
         return employeeRepository.findById(employeeId).orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm!"));
     }
 
+    // ID tu dong
     private String generateEmployeeId() {
         List<String> ids = employeeRepository.findAllIdsDesc();
         if (ids.isEmpty()) return "E001";
