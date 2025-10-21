@@ -82,7 +82,7 @@ public class OrderService {
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy đơn hàng với ID: " + orderId));
     }
 
-    // xoá một một đơn hàng
+    // xoá một đơn hàng
     public void deleteOrder(String id) {
         if (!orderRepository.existsById(id)) {
             throw new RuntimeException("Không tìm thấy đơn hàng để xóa!");

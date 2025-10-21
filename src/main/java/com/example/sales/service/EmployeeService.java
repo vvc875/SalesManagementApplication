@@ -1,5 +1,6 @@
 package com.example.sales.service;
 
+import com.example.sales.entity.Customer;
 import com.example.sales.entity.Employee;
 import com.example.sales.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,12 +39,18 @@ public class EmployeeService {
     }
 
     //Cập nhật thông tin nhân viên
-    public Employee updateEmployee(Employee employee) {
-        return employeeRepository.save(employee);
+    public Employee updateEmployee(String id, Employee employee) {
+        Employee existingEmployee = getEmployeeById(id);
+        existingEmployee.setName(employee.getName());
+        existingEmployee.setPhone(employee.getPhone());
+        existingEmployee.setAddress(employee.getAddress());
+        existingEmployee.setEmail(employee.getEmail());
+        return employeeRepository.save(existingEmployee);
     }
 
     //Xoá thông tin nhân viên
     public void deleteEmployee(String employeeId) {
         employeeRepository.deleteById(employeeId);
     }
+
 }

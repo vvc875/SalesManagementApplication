@@ -12,6 +12,8 @@ import java.util.Optional;
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, String> {
 
+    List<Category> findAllByOrderByIdAsc();
+    
     @Query("SELECT c.id FROM Category c ORDER BY c.id DESC")
     List<String> findAllIdsDesc();
 

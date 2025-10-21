@@ -12,10 +12,10 @@ import java.util.List;
 public class CategoryService {
     @Autowired
     private CategoryRepository categoryRepository;
-
-    //Lấy tất cả danh mục sản phẩm
+    
+    //Lấy danh sách tất cả danh mục sản phẩm
     public List<Category> getAllCategory(){
-        return categoryRepository.findAll();
+        return categoryRepository.findAllByOrderByIdAsc();
     }
 
     //Lấy danh mục sản phẩm theo id
