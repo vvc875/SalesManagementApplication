@@ -12,65 +12,88 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional; // Import Optional
+import java.util.UUID;
 
 @Service
 public class OrderDetailService {
 
-    @Autowired private OrderDetailRepository orderDetailRepository;
-    @Autowired private OrderRepository orderRepository;
-    @Autowired private ProductRepository productRepository;
-    @Autowired private OrderService orderService;
+    @Autowired
+    private OrderDetailRepository orderDetailRepository;
 
+    @Autowired
+    private OrderRepository orderRepository;
+
+    @Autowired
+    private ProductRepository productRepository;
+
+    @Autowired
+    private OrderService orderService;
+
+    // Sinh orderDetailId
     private String generateOrderDetailId() {
         long count = orderDetailRepository.count();
         return String.format("OD%03d", count + 1);
     }
 
-    //Thêm sản phảm vào đơn hàng
+    // Thêm sản phẩm vào đơn hàng
     @Transactional
     public OrderDetail addProductToOrder(String orderId, OrderDetailRequestDTO detailDTO) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy đơn hàng!"));
-        Product product = productRepository.findById(detailDTO.getProductId())
+        Product product = productRepository.getProductById(detailDTO.getProductId())
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm!"));
 
         if (product.getQuantity() < detailDTO.getQuantity()) {
             throw new RuntimeException("Số lượng sản phẩm trong kho không đủ!");
         }
 
-        // Kiểm tra xem sản phẩm đã có trong đơn hàng chưa
-        OrderDetail detail = orderDetailRepository.findByOrderIdAndProductId(orderId, detailDTO.getProductId())
-                .map(existingDetail -> {
-                    // Nếu đã có -> Cập nhật số lượng
-                    existingDetail.setQuantity(existingDetail.getQuantity() + detailDTO.getQuantity());
-                    return existingDetail;
-                })
-                .orElseGet(() -> {
-                    // Nếu chưa có -> Tạo mới
-                    OrderDetail newDetail = new OrderDetail();
-                    newDetail.setId(generateOrderDetailId());
-                    newDetail.setOrder(order);
-                    newDetail.setProduct(product);
-                    newDetail.setQuantity(detailDTO.getQuantity());
-                    newDetail.setPrice(product.getPrice()); // Lấy giá từ sản phẩm gốc
-                    return newDetail;
-                });
+        Optional<OrderDetail> existingDetailOpt = orderDetailRepository.findByOrderIdAndProductId(orderId, detailDTO.getProductId());
 
-        // Cập nhật lại số lượng tồn kho
-        product.setQuantity(product.getQuantity() - detailDTO.getQuantity());
-        productRepository.save(product);
+        OrderDetail savedDetail;
+        if (existingDetailOpt.isPresent()) {
+            // Đã tồn tại -> Cập nhật số lượng
+            OrderDetail existingDetail = existingDetailOpt.get();
+            int newQuantity = existingDetail.getQuantity() + detailDTO.getQuantity();
+            existingDetail.setQuantity(newQuantity); // Cập nhật tạm thời để lấy ID
+            // Gọi hàm UPDATE native chỉ cho quantity
+            orderDetailRepository.updateOrderDetailQuantityNative(existingDetail.getId(), newQuantity);
+            savedDetail = existingDetail; // Trả về đối tượng đã cập nhật (chỉ quantity)
+        } else {
+            // Chưa có -> Tạo mới
+            String newDetailId = generateOrderDetailId();
+            double price = product.getPrice(); // Lấy giá từ sản phẩm gốc
+            // Gọi hàm INSERT native
+            orderDetailRepository.insertOrderDetailNative(
+                    newDetailId,
+                    orderId,
+                    detailDTO.getProductId(),
+                    detailDTO.getQuantity(),
+                    price
+            );
+            // Fetch lại để có đối tượng trả về
+            savedDetail = orderDetailRepository.findById(newDetailId)
+                    .orElseThrow(() -> new RuntimeException("Lỗi khi thêm chi tiết đơn hàng."));
+        }
 
-        OrderDetail savedDetail = orderDetailRepository.save(detail);
+        // Cập nhật lại số lượng tồn kho bằng hàm native
+        int newProductQuantity = product.getQuantity() - detailDTO.getQuantity();
+        productRepository.updateProductQuantityNative(product.getId(), newProductQuantity);
 
-        //Tính tiền tổng đơn hàng
         orderService.updateOrderTotalAmount(orderId);
 
-        return savedDetail;
+        // Cần fetch lại savedDetail để có thông tin đầy đủ sau khi insert/update
+        return orderDetailRepository.findById(savedDetail.getId()).orElse(savedDetail);
     }
 
-    //Cập nhật số lượng sản phẩm
+    // Cập nhật đơn hàng
     @Transactional
     public OrderDetail updateOrderDetail(String detailId, int newQuantity) {
+        if (newQuantity <= 0) {
+            deleteOrderDetail(detailId);
+            return null;
+        }
+
         OrderDetail detail = orderDetailRepository.findById(detailId)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy chi tiết đơn hàng"));
 
@@ -78,26 +101,25 @@ public class OrderDetailService {
         int oldQuantity = detail.getQuantity();
         int quantityChange = newQuantity - oldQuantity;
 
-        // Kiểm tra tồn kho
         if (product.getQuantity() < quantityChange) {
             throw new RuntimeException("Số lượng sản phẩm trong kho không đủ để cập nhật!");
         }
 
-        detail.setQuantity(newQuantity);
+        // Gọi hàm UPDATE native cho quantity
+        orderDetailRepository.updateOrderDetailQuantityNative(detailId, newQuantity);
 
-        // Cập nhật lại tồn kho
-        product.setQuantity(product.getQuantity() - quantityChange);
-        productRepository.save(product);
+        // Cập nhật lại tồn kho bằng hàm native
+        int newProductQuantity = product.getQuantity() - quantityChange;
+        productRepository.updateProductQuantityNative(product.getId(), newProductQuantity);
 
-        OrderDetail updatedDetail = orderDetailRepository.save(detail);
-
-        // Cập nhật lại tổng tiền đơn hàng
         orderService.updateOrderTotalAmount(detail.getOrder().getId());
 
-        return updatedDetail;
+        // Fetch lại để trả về đối tượng đã cập nhật
+        return orderDetailRepository.findById(detailId)
+                .orElseThrow(() -> new RuntimeException("Lỗi khi cập nhật chi tiết đơn hàng."));
     }
 
-    //Xoá sản phẩm khỏi đơn hàng
+    // Xoá một chi tiết đơn hàng
     @Transactional
     public void deleteOrderDetail(String detailId) {
         OrderDetail detail = orderDetailRepository.findById(detailId)
@@ -107,17 +129,17 @@ public class OrderDetailService {
         Product product = detail.getProduct();
         int quantityToReturn = detail.getQuantity();
 
-        // Xóa chi tiết
-        orderDetailRepository.delete(detail);
+        // Gọi hàm DELETE native
+        orderDetailRepository.deleteOrderDetailById(detailId);
 
-        // Hoàn trả lại số lượng vào kho
-        product.setQuantity(product.getQuantity() + quantityToReturn);
-        productRepository.save(product);
+        // Hoàn trả lại số lượng vào kho bằng hàm native
+        int newProductQuantity = product.getQuantity() + quantityToReturn;
+        productRepository.updateProductQuantityNative(product.getId(), newProductQuantity);
 
-        // Cập nhật lại tổng tiền đơn hàng
         orderService.updateOrderTotalAmount(order.getId());
     }
 
+    // Tìm chi tiết đơn hàng của một đơn hàng
     public List<OrderDetail> findByOrderId(String orderId) {
         return orderDetailRepository.findByOrderId(orderId);
     }

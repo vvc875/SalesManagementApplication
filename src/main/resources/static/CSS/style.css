@@ -1,149 +1,140 @@
-body {
-    font-family: Arial, sans-serif;
+html, body {
+    height: 100%;
     margin: 0;
-    background-color: #ffffff; 
-    color: #333;
+    font-family: Arial, sans-serif;
+    background-color: #f4f7f6; 
+}
+
+body {
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
 }
 
 .container {
-    width: 90%;
-    max-width: 1200px; 
+    max-width: 1100px; 
     margin: 0 auto;    
+    padding: 0 20px;
 }
-
-main {
-    flex-grow: 1; 
-}
-
-
-.header {
-    width: 100%;
-}
-
-
-.header-top-bar {
-    background-color: #007bff; 
-    padding: 20px 0;
-}
-
-.header-top-bar h1 {
+.header h1 {
+    background-color: #2c3e50;
     color: white;
     text-align: center;
     margin: 0;
-    font-size: 2rem; 
+    padding: 20px 0;
+    font-size: 28px;
+    letter-spacing: 1.5px; 
 }
 
-.header-nav-bar {
-    background-color: #343a40; 
+.header nav {
+    background-color: #34495e;
     padding: 10px 0;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+    border-top: 1px solid #4a6572;
 }
 
-.header-nav-bar ul {
+.header nav .container {
+    display: flex;
+    justify-content: center; 
+}
+
+.header nav ul {
     list-style: none;
     margin: 0;
     padding: 0;
     display: flex;
-    justify-content: flex-end; 
+    gap: 15px;
 }
 
-.header-nav-bar li {
-    margin-left: 25px; 
-}
-
-.header-nav-bar a {
+.header nav a {
+    color: #ecf0f1;
     text-decoration: none;
+    font-size: 16px;
+    padding: 10px 20px; 
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.header nav a.active, .header nav a:hover {
+    background-color: #4a6572;
     color: white;
-    font-size: 0.9rem; 
-    padding: 5px 0;
 }
-
-.header-nav-bar a.active,
-.header-nav-bar a:hover {
-    color: #007bff; 
-    border-bottom: 2px solid #007bff; 
-}
-
 
 .main-content {
-    padding: 40px 0; 
+    flex-grow: 1;
+    padding: 50px 0;
 }
 
 .dashboard-grid {
-    display: grid;
-    
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    display: flex;
+    justify-content: center; 
     gap: 25px;               
+    flex-wrap: wrap;         
+}
+
+.dashboard-item {
+    width: 240px;           
+    display: flex;
+    flex-direction: column; 
+    gap: 20px;               
 }
 
 .stat-card {
-    background-color: #ffffff;
-    border: 1px solid #e0e0e0;
+    background-color: white;
+    border: 1px solid #e9ecef;
     border-radius: 8px;
-    padding: 20px;
+    padding: 25px;
     text-align: center;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.05); 
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
 }
 
 .stat-card h3 {
-    margin: 0 0 10px 0;
-    font-size: 1rem;
+    margin-top: 0;
+    font-size: 16px;
     color: #6c757d;
-    font-weight: normal;
+    font-weight: 600;
 }
 
 .stat-card p {
-    margin: 0;
-    font-size: 2.2rem; 
+    margin-bottom: 0;
+    font-size: 32px;
     font-weight: bold;
-    color: #343a40; 
+    color: #2c3e50;
 }
 
 .action-btn {
-    display: block; 
-    width: 100%;
-    text-align: center;
-    text-decoration: none;
-    padding: 12px 0;
-    margin-top: 15px; 
-    border-radius: 5px;
+    padding: 18px;
+    font-size: 16px;
     font-weight: bold;
-    font-size: 0.9rem;
-    border: 1px solid;
-    background-color: transparent; 
-    box-sizing: border-box; 
-    transition: background-color 0.2s ease;
+    border: 2px solid;
+    border-radius: 8px;
+    background-color: white;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
 }
+
+.product-btn { border-color: #3498db; color: #3498db; }
+.customer-btn { border-color: #2ecc71; color: #2ecc71; }
+.order-btn { border-color: #f1c40f; color: #f1c40f; }
+.report-btn { border-color: #e74c3c; color: #e74c3c; }
 
 .action-btn:hover {
-    background-color: #f8f9fa; 
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
-.product-btn {
-    color: #007bff;
-    border-color: #007bff;
-}
-.customer-btn {
-    color: #28a745;
-    border-color: #28a745;
-}
-.order-btn {
-    color: #ffc107;
-    border-color: #ffc107;
-}
-.report-btn {
-    color: #dc3545;
-    border-color: #dc3545;
-}
+.product-btn:hover { background-color: #3498db; }
+.customer-btn:hover { background-color: #2ecc71; }
+.order-btn:hover { background-color: #f1c40f; }
+.report-btn:hover { background-color: #e74c3c; }
 
 .footer {
     background-color: #2c3e50;
     color: #bdc3c7;
-    text-align: center;
     padding: 20px 0;
-    margin-top: auto; 
-    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+.footer p {
+    margin: 0;
+    text-align: center;
 }

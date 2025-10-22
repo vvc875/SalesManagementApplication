@@ -7,6 +7,7 @@ import com.example.sales.entity.Product;
 import com.example.sales.repository.CategoryRepository;
 import com.example.sales.repository.ProductRepository;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.stereotype.Service;
@@ -24,12 +25,14 @@ public class ProductService {
 
     //Lấy tất cả danh sách Product
     public List<Product> getAllProduct() {
+
         return productRepository.getAllProduct();
     }
 
     //Lấy 1 sản phẩm theo id của sản phẩm
     public Product getProductById(String id) {
-        return productRepository.findById(id).orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm!"));
+        return productRepository.getProductById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm!"));
     }
 
     //Tự động tạo id tăng dần
@@ -43,56 +46,73 @@ public class ProductService {
     }
 
     //Thêm một sản phẩm mới
+    @Transactional
     public Product addProduct(ProductCreationDTO productDTO) {
         // 1. Tìm Category từ database dựa trên categoryName từ DTO
         Category category = categoryRepository.findByNameIgnoreCase(productDTO.getCategoryName())
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy danh mục với ID: " + productDTO.getCategoryName()));
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy danh mục: " + productDTO.getCategoryName()));
 
-        // 2. Tạo một đối tượng Product mới
+        // 2. Tạo một đối tượng Product mới (trong bộ nhớ Java)
         Product newProduct = new Product();
-        newProduct.setId(generateProductId()); // Tự tạo ID
+        newProduct.setId(generateProductId());
         newProduct.setName(productDTO.getName());
         newProduct.setPrice(productDTO.getPrice());
         newProduct.setQuantity(productDTO.getQuantity());
         newProduct.setDescription(productDTO.getDescription());
+        newProduct.setCategory(category); // Gán đối tượng Category
 
-        // 3. Gán đối tượng Category đã được quản lý vào sản phẩm mới
-        newProduct.setCategory(category);
+        productRepository.insertProduct(
+                newProduct.getId(),
+                newProduct.getName(),
+                newProduct.getPrice(),
+                newProduct.getQuantity(),
+                newProduct.getDescription(),
+                newProduct.getCategory().getId()
+        );
 
-        // 4. Lưu sản phẩm mới vào database
-        return productRepository.save(newProduct);
+        return newProduct;
     }
 
-    //cập nhật sản phẩm
+    // Cập nhật sản phẩm
+    @Transactional
     public Product updateProduct(String id, ProductUpdateDTO productDetails) {
         // 1. Lấy sản phẩm hiện có từ DB
         Product existingProduct = getProductById(id);
 
-        // 2. Cập nhật các trường thông thường
+        // 2. Cập nhật các trường trên đối tượng Java
         existingProduct.setName(productDetails.getName());
         existingProduct.setPrice(productDetails.getPrice());
         existingProduct.setQuantity(productDetails.getQuantity());
         existingProduct.setDescription(productDetails.getDescription());
 
-        // 3. Xử lý cập nhật Category một cách an toàn
-        // Chỉ thay đổi category nếu client cung cấp categoryName mới
+        // 3. Xử lý cập nhật Category
         if (productDetails.getCategoryName() != null && !productDetails.getCategoryName().isEmpty()) {
             Category newCategory = categoryRepository.findByNameIgnoreCase(productDetails.getCategoryName())
-                    .orElseThrow(() -> new RuntimeException("Không tìm thấy danh mục với ID: " + productDetails.getCategoryName()));
+                    .orElseThrow(() -> new RuntimeException("Không tìm thấy danh mục: " + productDetails.getCategoryName()));
             existingProduct.setCategory(newCategory);
         }
 
-        // 4. Lưu lại sản phẩm đã cập nhật
-        return productRepository.save(existingProduct);
+        productRepository.updateProduct(
+                existingProduct.getId(),
+                existingProduct.getName(),
+                existingProduct.getPrice(),
+                existingProduct.getQuantity(),
+                existingProduct.getDescription(),
+                existingProduct.getCategory().getId()
+        );
+
+        return existingProduct;
     }
 
-    //xoá một sản phẩm theo id
+    // Xoá một sản phẩm theo id
+    @Transactional
     public void deleteProduct(String id) {
-        if (!productRepository.existsById(id)) {
+        if (productRepository.countById(id) == 0) {
             throw new RuntimeException("không tồn tại sản phẩm!");
         }
-        productRepository.deleteById(id);
+        productRepository.deleteProductById(id);
     }
+
 
     // Tìm theo tên
     public List<Product> searchProductByName(String keyword) {

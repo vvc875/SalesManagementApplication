@@ -32,6 +32,7 @@ public class StatisticsService {
 
     // Thống kê doanh thu theo tháng
     public List<Object[]> getMonthlyRevenue(int year) {
+
         return orderRepository.findMonthlyRevenue(year);
     }
 
@@ -47,6 +48,6 @@ public class StatisticsService {
 
     // Thống kê khách hàng mua nhiều nhất
     public List<TopCustomerDTO> getTopCustomers(int limit) {
-        return orderRepository.findTopCustomers(PageRequest.of(0, limit));
+        return orderRepository.findTopCustomer(PageRequest.of(0, limit));
     }
 }

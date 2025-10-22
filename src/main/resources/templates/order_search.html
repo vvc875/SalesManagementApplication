@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đơn hàng</title>
+    <link rel="icon" type="image/png" th:href="@{/images/shopping-cart.png}">
+    <link rel="stylesheet" th:href="@{/CSS/search_order.css}">
+
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <nav class="header-nav-bar">
+                <ul>
+                    <li><a th:href="@{/page_home}" class="active-if-on-page">Trang chủ</a></li>
+                    <li><a th:href="@{/page_product}" class="active-if-on-page">Sản phẩm</a></li>
+                    <li><a th:href="@{/page_category}" class="active-if-on-page">Danh mục sản phẩm</a></li>
+                    <li><a th:href="@{/page_customer}" class="active-if-on-page">Khách hàng</a></li>
+                    <li><a th:href="@{/page_employee}" class="active-if-on-page">Nhân viên</a></li>
+                    <li><a th:href="@{/page_order}" class="active-if-on-page">Hóa đơn</a></li>
+                    <li><a th:href="@{/page_statistics}" class="active-if-on-page">Thống kê</a></li>
+                    <li>
+                        <form th:action="@{/logout}" method="post" style="display:inline;">
+                            <button type="submit" class="logout-btn">Đăng xuất</button>
+                        </form>
+                    </li>
+                </ul>
+            </nav>
+        </header>
+
+        <div class="main-content">
+            <aside class="sidebar">
+                <h2>Tìm kiếm đơn hàng</h2>
+
+                <div class="search-form">
+                    <label for="search-criteria">Tìm theo:</label>
+                    <select id="search-criteria">
+                        <option value="" disabled selected>-- Chọn tiêu chí --</option>
+                        <option value="id">Mã đơn hàng</option>
+                        <option value="customer">Khách hàng</option>
+                        <option value="status">Trạng thái</option>
+                    </select>
+                </div>
+
+                    <div id="keyword-input-group" class="search-form hidden">
+                        <label for="searchInput">Nhập từ khóa:</label>
+                        <input type="text" id="searchInput" placeholder="Nhập từ khóa...">
+                    </div>
+
+                <div id="search-buttons" class="hidden">
+                    <button id="searchButton">Tìm kiếm</button>
+                    <button id="showAllButton" class="secondary">Hiển thị tất cả</button>
+                </div>  
+                
+                <div id="orderFormPanel" class="form-panel">
+                    <div class="form-panel-header">
+                        <h2 id="formTitle">Thêm đơn hàng mới</h2>
+                        <span id="closeFormBtn" class="close-btn" aria-label="Đóng">&times;</span>
+                    </div>
+
+                    <form id="orderForm">
+                        <input type="hidden" id="orderId">
+
+                        <div class="search-form">
+                            <label for="customerId">Id khách hàng:</label>
+                            <input type="text" id="customerId" required>
+                        </div>
+
+                        <div class="search-form">
+                            <label for="employeeId">Id nhân viên:</label>
+                            <input type="text" id="employeeId" required>
+                        </div>
+
+                        <div class="search-form">
+                            <label for="orderDate">Ngày đặt hàng:</label>
+                            <input type="date" id="orderDate" required>
+                        </div>
+
+                        <button id="saveProductBtn" class="primary" type="button">Lưu</button>
+                    </form>
+                </div>
+            </aside>
+
+            <main class="order-list-area">
+                <div class="list-header">
+                    <h2>Danh sách đơn hàng</h2>
+                    <button class="btn btn-primary" id="btnCreateOrder">
+                        <i class="fas fa-plus"></i> Tạo đơn hàng
+                    </button>
+                </div>
+
+                <p class="result-summary">Tất cả đơn hàng (<span id="total-results">0</span> kết quả)</p>
+
+                <table id="orderTable">
+                    <thead>
+                        <tr>
+                            <th>Mã ĐH</th>
+                            <th>Khách hàng</th>
+                            <th>Nhân viên bán hàng</th> <th>Ngày đặt</th>
+                            <th>Tổng tiền (VND)</th>
+                            <th>Trạng thái</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        </tbody>
+                </table>
+            </main>
+        </div>
+    </div>
+
+<script th:src="@{/JS/search_order.js}"></script>
+</body>
+</html>
