@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh mục sản phẩm</title>
+    <link rel="icon" type="image/png" th:href="@{/images/shopping-cart.png}">
+    <link rel="stylesheet" th:href="@{/CSS/search_category.css}">
+
+</head>
+<body>
+<header class="header">
+    <nav class="header-nav-bar">
+        <div class="container">
+            <ul>
+                <li><a th:href="@{/page_home}">Trang chủ</a></li>
+                <li><a th:href="@{/page_product}">Sản phẩm</a></li>
+                <li><a th:href="@{/page_category}" class="active">Danh mục sản phẩm</a></li> <li><a th:href="@{/page_customer}">Khách hàng</a></li>
+                <li><a th:href="@{/page_employee}">Nhân viên</a></li>
+                <li><a th:href="@{/page_order}">Hóa đơn</a></li>
+                <li><a th:href="@{/page_statistics}">Thống kê</a></li>
+                <li>
+                    <form th:action="@{/logout}" method="post">
+                        <button type="submit" class="logout-btn">Đăng xuất</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+<main>
+    <div class="container main-layout">
+        <aside class="search-panel">
+            <div class="search-box">
+                <h2>Tìm kiếm danh mục</h2>
+                <div class="form-group">
+                    <label for="searchType">Tìm theo:</label>
+                    <select id="searchType">
+                        <option value="id">ID danh mục</option>
+                        <option value="name" selected>Tên danh mục</option> </select>
+                </div>
+                <div id="keyword-input-group" class="form-group">
+                    <label for="searchInput">Nhập từ khóa:</label>
+                    <input type="text" id="searchInput" placeholder="Nhập tên hoặc ID...">
+                </div>
+                <div id="search-buttons">
+                    <button id="searchButton">Tìm kiếm</button>
+                    <button id="showAllButton" class="secondary">Hiển thị tất cả</button>
+                </div>
+            </div>
+
+            <div id="categoryFormPanel" class="form-panel">
+                <div class="form-panel-header">
+                    <h2 id="formTitle">Thêm Danh Mục Mới</h2>
+                    <span id="closeFormBtn" class="close-btn">&times;</span>
+                </div>
+                <form id="categoryForm">
+                    <input type="hidden" id="categoryId">
+                    <div class="form-group">
+                        <label for="categoryName">Tên Danh Mục:</label>
+                        <input type="text" id="categoryName" required>
+                    </div>
+                    <button id="saveCategoryBtn" class="primary" type="button">Lưu</button>
+                </form>
+            </div>
+        </aside>
+
+        <section class="results-panel"> <div class="results-header">
+            <h2>Danh sách Danh Mục</h2>
+            <button id="addCategoryBtn" class="primary">Thêm mới</button>
+        </div>
+            <div id="result-container">
+                <div id="result">
+                    <p>Đang tải dữ liệu...</p>
+                </div>
+            </div>
+        </section>
+    </div>
+</main>
+
+<footer class="footer">
+    <div class="container">
+        <p>© 2025 Quản lý bán hàng - Nhóm 6</p>
+    </div>
+</footer>
+
+<script th:src="@{/JS/search_category.js}"></script>
+</body>
+</html>

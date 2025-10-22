@@ -1,8 +1,7 @@
 package com.example.sales.repository;
 
-import jakarta.transaction.Transactional;
-import org.springframework.data.jpa.repository.JpaRepository;
 import com.example.sales.entity.Category;
+import org.springframework.data.jpa.repository.JpaRepository; // Vẫn cần extends
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,27 +13,31 @@ import java.util.Optional;
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, String> {
 
-    @Query(value = "SELECT * FROM Category ", nativeQuery = true)
-    List<Category> findAll();
+    @Query(value = "SELECT * FROM Category ORDER BY category_id ASC", nativeQuery = true)
+    List<Category> getAllCategory();
 
     @Query(value = "SELECT * FROM Category WHERE category_id = :id", nativeQuery = true)
-    Optional<Category> findById(@Param("id") String id);
+    Optional<Category> getCategoryById(@Param("id") String id);
+
+    @Query(value = "SELECT COUNT(*) FROM Category WHERE category_id = :id", nativeQuery = true)
+    int countByIdNative(@Param("id") String id);
+
+    @Modifying
+    @Query(value = "DELETE FROM Category WHERE category_id = :id", nativeQuery = true)
+    void deleteByIdNative(@Param("id") String id);
+
+    @Modifying
+    @Query(value = "INSERT INTO Category (category_id, name) VALUES (:id, :name)", nativeQuery = true)
+    void insertCategory(@Param("id") String id, @Param("name") String name);
+
+    @Modifying
+    @Query(value = "UPDATE Category SET name = :name WHERE category_id = :id", nativeQuery = true)
+    void updateCategory(@Param("id") String id, @Param("name") String name);
 
     @Query(value = "SELECT category_id FROM Category ORDER BY category_id DESC", nativeQuery = true)
     List<String> findAllIdsDesc();
 
-    // Cập nhập danh mục sản phẩm
-
-    // Không  tồn tại danh mục sản phẩm
-    @Query(value = "SELECT CASE WHEN COUNT(*) > 0 THEN TRUE ELSE FALSE END FROM Category WHERE category_id = :id", nativeQuery = true)
-    boolean existsById(@Param("id") String id);
-
-    // 🔹 Xoá danh mục theo id
-    @Modifying // cho phép query xóa
-    @Transactional // nếu lỗi khóa ngoại vi phạm, bị hủy bỏ tránh làm hỏng dữ lệu
-    @Query(value = "DELETE FROM Category WHERE category_id = :id", nativeQuery = true)
-    void deleteById(@Param("id") String id);
-
-    @Query(value = "SELECT * FROM category c WHERE LOWER(c.name) = LOWER(:name)", nativeQuery = true)
+    @Query(value = "SELECT * FROM Category c WHERE LOWER(c.name) = LOWER(:name)", nativeQuery = true)
     Optional<Category> findByNameIgnoreCase(@Param("name") String name);
+
 }

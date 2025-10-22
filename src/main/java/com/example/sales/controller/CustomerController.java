@@ -31,6 +31,7 @@ public class CustomerController {
 
     @PostMapping
     Customer addCustomer(@RequestBody Customer customer){
+
         return customerService.addCustomer(customer);
     }
 
@@ -44,6 +45,11 @@ public class CustomerController {
         return customerService.searchCustomers(keyword);
     }
 
+    @GetMapping("/phone")
+    List<Customer> searchCustomerByPhone(@RequestParam("keyword") String keyword){
+        return customerService.searchCustomerByPhone(keyword);
+    }
+
     @GetMapping("/{customerId}")
     public Customer getCustomerById(@PathVariable("customerId") String customerId) {
         return customerService.getCustomerById(customerId);
@@ -52,7 +58,7 @@ public class CustomerController {
     @DeleteMapping("/{customerId}")
     String deleteCustomer(@PathVariable("customerId") String customerId){
         customerService.deleteCustomer(customerId);
-        return "delete customer successfully";
+        return "Delete customer successfully!";
     }
 
 }

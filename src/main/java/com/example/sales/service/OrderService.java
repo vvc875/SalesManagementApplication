@@ -13,80 +13,99 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class OrderService {
 
     @Autowired private OrderRepository orderRepository;
     @Autowired private OrderDetailRepository orderDetailRepository;
-    @Autowired private CustomerRepository customerRepository; // Cần để tìm khách hàng
-    @Autowired private EmployeeRepository employeeRepository; // Cần để tìm nhân viên
+    @Autowired private CustomerRepository customerRepository;
+    @Autowired private EmployeeRepository employeeRepository;
 
-    // Tự động tạo ID cho đơn hàng mới
+    // Lấy tất cả đơn hàng hiện
+    public List<Order> getAllOrder(){
+        return orderRepository.getAllOrder();
+    }
+
+    // Lấy đơn hàng theo orderId
+    public Order getOrderById(String orderId) {
+        return orderRepository.getOrderById(orderId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy đơn hàng với ID: " + orderId));
+    }
+
+    // Sinh orderId
     private String generateOrderId() {
-        // (Bạn có thể thêm logic tạo ID phức tạp hơn ở đây)
-        long count = orderRepository.count();
+        long count = orderRepository.countTotalOrder();
         return String.format("OR%03d", count + 1);
     }
 
-    //Tạo đơn hàng mới
+    // Tạo đơn hàng mới
     @Transactional
     public Order createOrder(OrderCreationDTO orderDTO) {
-        Customer customer = customerRepository.findById(orderDTO.getCustomerId())
+        Customer customer = customerRepository.getCustomerById(orderDTO.getCustomerId())
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy khách hàng với ID: " + orderDTO.getCustomerId()));
 
-        Employee employee = employeeRepository.findById(orderDTO.getEmployeeId())
+        Employee employee = employeeRepository.getEmployeeById(orderDTO.getEmployeeId())
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy nhân viên với ID: " + orderDTO.getEmployeeId()));
 
-        Order newOrder = new Order();
-        newOrder.setId(generateOrderId());
-        newOrder.setCustomer(customer);
-        newOrder.setEmployee(employee);
-        newOrder.setOrderDate(LocalDate.now());
-        newOrder.setStatus("PENDING"); // Trạng thái ban đầu
-        newOrder.setTotalAmount(0.0); // Tổng tiền ban đầu là 0
+        String newOrderId = generateOrderId();
+        LocalDate now = LocalDate.now();
+        String initialStatus = "PENDING";
+        double initialTotal = 0.0;
 
-        return orderRepository.save(newOrder);
+        // Gọi hàm INSERT native
+        orderRepository.insertOrder(
+                newOrderId,
+                customer.getId(),
+                employee.getId(),
+                now,
+                initialStatus,
+                initialTotal
+        );
+
+        // Fetch lại để trả về entity
+        return getOrderById(newOrderId);
     }
 
-    //Tự động cập nhật tổng tiền (được gọi bởi OrderDetailService)
+    // Cập nhật tổng tiền của đơn hàng
     @Transactional
     public void updateOrderTotalAmount(String orderId) {
-        Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy đơn hàng để cập nhật tổng tiền"));
+        // Kiểm tra đơn hàng tồn tại
+        Order order = getOrderById(orderId);
 
         List<OrderDetail> details = orderDetailRepository.findByOrderId(orderId);
         double total = details.stream()
                 .mapToDouble(detail -> detail.getPrice() * detail.getQuantity())
                 .sum();
 
-        order.setTotalAmount(total);
-        orderRepository.save(order);
+        // Gọi hàm UPDATE native chỉ cho totalAmount
+        orderRepository.updateOrderTotalAmount(orderId, total);
     }
 
-    // Xem danh sách đơn hàng
-    public List<Order> getAllOrder(){
-        return orderRepository.findAll();
-    }
-
-    // Xem chi tiết một đơn hàng
-    public Order getOrderById(String orderId) {
-        return orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy đơn hàng với ID: " + orderId));
-    }
-
-    // xoá một một đơn hàng
+    // Xoá một đơn hàng
+    @Transactional
     public void deleteOrder(String id) {
-        if (!orderRepository.existsById(id)) {
+        if (orderRepository.countById(id) == 0) {
             throw new RuntimeException("Không tìm thấy đơn hàng để xóa!");
         }
-        orderRepository.deleteById(id);
+        // Trước khi xóa Order, cần xóa các OrderDetail liên quan (nếu không có ON DELETE CASCADE)
+        List<OrderDetail> details = orderDetailRepository.findByOrderId(id);
+        for (OrderDetail detail : details) {
+            orderDetailRepository.deleteOrderDetailById(detail.getId()); // Xóa từng detail
+        }
+        // Sau đó mới xóa Order
+        orderRepository.deleteOrderById(id); // Gọi hàm native deleteById
+    }
+
+    // Hàm cập nhật trạng thái
+    @Transactional
+    public Order updateOrderStatus(String orderId, String newStatus) {
+        if (orderRepository.countById(orderId) == 0) {
+            throw new RuntimeException("Không tìm thấy đơn hàng để cập nhật trạng thái!");
+        }
+        orderRepository.updateOrderStatusNative(orderId, newStatus.toUpperCase());
+        return getOrderById(orderId);
     }
 }

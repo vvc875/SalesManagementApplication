@@ -105,7 +105,8 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         .then(response => {
             if (!response.ok) throw new Error('Thêm mới thất bại!');
-            closeFormPanel(); fetchAllCustomers();
+            closeFormPanel();
+            fetchAllCustomers();
         })
         .catch(error => console.error("Lỗi:", error));
     }
@@ -133,7 +134,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // === CÁC HÀM TÌM KIẾM VÀ HIỂN THỊ ===
 function handleSearchTypeChange() {
-    const type = this.value; 
+    const type = this.value;
 
     const keywordGroup = document.getElementById('keyword-input-group');
     const searchButtonsGroup = document.getElementById('search-buttons');
@@ -159,7 +160,7 @@ function handleSearchTypeChange() {
         let apiUrl = '';
         if (searchType === 'id') {
             apiUrl = `http://localhost:8080/customer/${encodeURIComponent(keyword)}`;
-        } else { 
+        } else {
             apiUrl = `http://localhost:8080/customer/search?keyword=${encodeURIComponent(keyword)}`;
         }
 
@@ -179,10 +180,10 @@ function handleSearchTypeChange() {
     }
 
     function fetchAllCustomers() {
-        searchTypeSelect.value = ""; 
+        searchTypeSelect.value = "";
         handleSearchTypeChange.call(searchTypeSelect);
         resultContainer.innerHTML = "<p>Đang tải danh sách khách hàng...</p>";
-        
+
         fetch('http://localhost:8080/customer')
             .then(response => {
                 if (!response.ok) throw new Error("Lỗi khi gọi API");

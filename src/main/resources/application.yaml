@@ -1,25 +1,25 @@
 server:
-    port: 8080
+  port: 8080
 
 spring:
-    datasource:
-        url: jdbc:mysql://localhost:3306/sale_management?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-        username: root
-        password: chung2005
-        driver-class-name: com.mysql.cj.jdbc.Driver
+  datasource:
+    url: jdbc:mysql://localhost:3306/sale_management?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: root
+    password: chung2005
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
-    jpa:
-        hibernate:
-            ddl-auto: none # Không tự động sửa bảng vì bạn đã tạo taymys
-        show-sql: true # Hiển thị SQL trong console
-        properties:
-            hibernate:
-                dialect: org.hibernate.dialect.MySQL8Dialect
-                format_sql: true
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true # Hiển thị SQL trong console
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        format_sql: true
 
-    thymeleaf:
-        cache: false # Tắt cache khi dev
+  thymeleaf:
+    cache: false # Tắt cache khi dev
 
-    sql:
-        init:
-            mode: never
+  sql:
+    init:
+      mode: never

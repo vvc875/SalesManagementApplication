@@ -17,13 +17,11 @@ public class OrderDetailController {
     @Autowired
     private OrderDetailService orderDetailService;
 
-    // Lấy tất cả chi tiết của một đơn hàng
     @GetMapping("/{orderId}/details")
     public List<OrderDetail> getOrderDetailsByOrder(@PathVariable String orderId) {
         return orderDetailService.findByOrderId(orderId);
     }
 
-    // Thêm sản phẩm vào đơn hàng
     @PostMapping("/{orderId}/details")
     public OrderDetail addProductToOrder(
             @PathVariable String orderId,
@@ -31,7 +29,6 @@ public class OrderDetailController {
         return orderDetailService.addProductToOrder(orderId, detailDTO);
     }
 
-    // Cập nhật số lượng sản phẩm
     @PutMapping("/details/{detailId}")
     public OrderDetail updateOrderDetail(
             @PathVariable String detailId,
@@ -39,7 +36,6 @@ public class OrderDetailController {
         return orderDetailService.updateOrderDetail(detailId, detailDTO.getQuantity());
     }
 
-    // Xóa một sản phẩm khỏi đơn hàng
     @DeleteMapping("/details/{detailId}")
     public ResponseEntity<Map<String, String>> deleteOrderDetail(@PathVariable String detailId) {
         orderDetailService.deleteOrderDetail(detailId);

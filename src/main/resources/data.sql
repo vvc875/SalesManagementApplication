@@ -1,3 +1,7 @@
+-- INSERT IGNORE để không báo lỗi nếu tài khoản đã tồn tại
+INSERT IGNORE INTO account (username, password)
+VALUES ('admin', '12345');
+
 INSERT INTO Category(category_id, name) VALUES
 ('CAT01', 'Smartphones'),
 ('CAT02', 'Tablets'),

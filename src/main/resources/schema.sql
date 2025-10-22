@@ -1,7 +1,12 @@
 CREATE DATABASE IF NOT EXISTS sale_management;
 USE sale_management;
 
-SET FOREIGN_KEY_CHECKS = 0; 
+SET FOREIGN_KEY_CHECKS = 0;
+
+CREATE TABLE account(
+    username VARCHAR(255) PRIMARY KEY,
+    password VARCHAR(255)
+);
 
 -- Tạo bảng Customer
 CREATE TABLE Customer(
@@ -51,10 +56,10 @@ CREATE TABLE Orders(
     status VARCHAR(50),
     customer_id VARCHAR(20) NOT NULL,
     employee_id VARCHAR(20),
-    FOREIGN KEY (customer_id) 
+    FOREIGN KEY (customer_id)
         REFERENCES Customer(customer_id)
         ON DELETE RESTRICT,
-    FOREIGN KEY (employee_id) 
+    FOREIGN KEY (employee_id)
         REFERENCES Employee(employee_id)
         ON DELETE SET NULL
 );

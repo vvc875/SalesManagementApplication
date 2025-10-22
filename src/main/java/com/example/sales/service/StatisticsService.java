@@ -32,6 +32,7 @@ public class StatisticsService {
 
     // Thống kê doanh thu theo tháng
     public List<Object[]> getMonthlyRevenue(int year) {
+
         return orderRepository.findMonthlyRevenue(year);
     }
 
@@ -47,15 +48,6 @@ public class StatisticsService {
 
     // Thống kê khách hàng mua nhiều nhất
     public List<TopCustomerDTO> getTopCustomers(int limit) {
-        return orderRepository.findTopCustomers(PageRequest.of(0, limit));
+        return orderRepository.findTopCustomer(PageRequest.of(0, limit));
     }
 }
-/*
-
-    // Top khách hàng mua nhiều nhất
-    @Query(value = "SELECT c.customer_id, c.name, SUM(o.total_amount) AS total " +
-                   "FROM orders o JOIN customer c ON o.customer_id = c.customer_id " +
-                   "GROUP BY c.customer_id, c.name " +
-                   "ORDER BY total DESC \n--#pageable", nativeQuery = true)
-    List<TopCustomerDTO> findTopCustomers(Pageable pageable);
- */

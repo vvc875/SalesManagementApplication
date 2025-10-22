@@ -17,9 +17,9 @@ import java.util.Optional;
 @Repository
 public interface OrderDetailRepository extends JpaRepository<OrderDetail, String> {
 
-    // ID tu dong
-    @Query(value = "SELECT MAX(CAST(SUBSTRING(order_detail_id, 3) AS UNSIGNED)) FROM order_detail ", nativeQuery = true)
-    long count(String orderId);
+//    // ID tu dong
+//    @Query(value = "SELECT MAX(CAST(SUBSTRING(order_detail_id, 3) AS UNSIGNED)) FROM order_detail ", nativeQuery = true)
+//    long count(String orderId);
 
     //Thêm sản phảm vào đơn hàng
     @Query(value = "SELECT * FROM order_detail od WHERE od.order_id = :orderId AND od.product_id = :productId", nativeQuery = true)
@@ -32,7 +32,7 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail, String
     //Xoá sản phẩm khỏi đơn hàng
     @Modifying
     @Query(value = "DELETE FROM order_detail WHERE orderdetail_id = :detailId", nativeQuery = true)
-    void delete(@Param("detailId") String detailId);
+    void deleteOrderDetailById(@Param("detailId") String detailId);
 
     @Query(value = "SELECT * FROM order_detail od WHERE od.order_id = :orderId", nativeQuery = true)
     List<OrderDetail> findByOrderId(@Param("orderId") String orderId);
@@ -57,4 +57,25 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail, String
             "ORDER BY totalSold DESC ", nativeQuery = true)
     List<BestSellingProductDTO> findBestSellingProducts(Pageable pageable);
 
+    @Modifying
+    @Query(value = """
+        INSERT INTO Order_Detail (orderdetail_id, order_id, product_id, quantity, price) 
+        VALUES (:id, :orderId, :productId, :quantity, :price)
+        """, nativeQuery = true)
+    void insertOrderDetailNative(@Param("id") String id,
+                                 @Param("orderId") String orderId,
+                                 @Param("productId") String productId,
+                                 @Param("quantity") int quantity,
+                                 @Param("price") double price);
+
+    @Modifying
+    @Query(value = "UPDATE Order_Detail SET quantity = :quantity WHERE orderdetail_id = :id", nativeQuery = true)
+    void updateOrderDetailQuantityNative(@Param("id") String id, @Param("quantity") int quantity);
+
+    @Modifying
+    @Query(value = "UPDATE Order_Detail SET quantity = :quantity, price = :price WHERE orderdetail_id = :id", nativeQuery = true)
+    void updateOrderDetailQuantityAndPriceNative(@Param("id") String id, @Param("quantity") int quantity, @Param("price") double price);
+
+    @Query(value = "SELECT COUNT(*) FROM Order_Detail", nativeQuery = true)
+    long count();
 }
