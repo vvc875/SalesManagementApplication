@@ -1,14 +1,8 @@
 package com.example.sales.service;
 
 import com.example.sales.dto.OrderCreationDTO;
-import com.example.sales.entity.Customer;
-import com.example.sales.entity.Employee;
-import com.example.sales.entity.Order;
-import com.example.sales.entity.OrderDetail;
-import com.example.sales.repository.CustomerRepository;
-import com.example.sales.repository.EmployeeRepository;
-import com.example.sales.repository.OrderDetailRepository;
-import com.example.sales.repository.OrderRepository;
+import com.example.sales.entity.*;
+import com.example.sales.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +17,7 @@ public class OrderService {
     @Autowired private OrderDetailRepository orderDetailRepository;
     @Autowired private CustomerRepository customerRepository;
     @Autowired private EmployeeRepository employeeRepository;
+    @Autowired private ProductRepository productRepository;
 
     // Lấy tất cả đơn hàng hiện
     public List<Order> getAllOrder(){
@@ -65,23 +60,17 @@ public class OrderService {
                 initialTotal
         );
 
-        // Fetch lại để trả về entity
         return getOrderById(newOrderId);
     }
 
     // Cập nhật tổng tiền của đơn hàng
     @Transactional
     public void updateOrderTotalAmount(String orderId) {
-        // Kiểm tra đơn hàng tồn tại
         Order order = getOrderById(orderId);
 
-        List<OrderDetail> details = orderDetailRepository.findByOrderId(orderId);
-        double total = details.stream()
-                .mapToDouble(detail -> detail.getPrice() * detail.getQuantity())
-                .sum();
+        Double total = orderDetailRepository.calculateTotalAmount(orderId);
 
-        // Gọi hàm UPDATE native chỉ cho totalAmount
-        orderRepository.updateOrderTotalAmount(orderId, total);
+        orderRepository.updateOrderTotalAmount(orderId, (total != null) ? total : 0.0);
     }
 
     // Xoá một đơn hàng
@@ -90,22 +79,23 @@ public class OrderService {
         if (orderRepository.countById(id) == 0) {
             throw new RuntimeException("Không tìm thấy đơn hàng để xóa!");
         }
-        // Trước khi xóa Order, cần xóa các OrderDetail liên quan (nếu không có ON DELETE CASCADE)
+
         List<OrderDetail> details = orderDetailRepository.findByOrderId(id);
         for (OrderDetail detail : details) {
-            orderDetailRepository.deleteOrderDetailById(detail.getId()); // Xóa từng detail
-        }
-        // Sau đó mới xóa Order
-        orderRepository.deleteOrderById(id); // Gọi hàm native deleteById
-    }
 
-    // Hàm cập nhật trạng thái
-    @Transactional
-    public Order updateOrderStatus(String orderId, String newStatus) {
-        if (orderRepository.countById(orderId) == 0) {
-            throw new RuntimeException("Không tìm thấy đơn hàng để cập nhật trạng thái!");
+            Product product = productRepository.getProductById(detail.getProduct().getId())
+                    .orElseThrow(() -> new RuntimeException("Lỗi: Không tìm thấy sản phẩm " + detail.getProduct().getId()));
+
+            // Hoàn trả lại số lượng vào kho
+            int quantityToReturn = detail.getQuantity();
+            int newProductQuantity = product.getQuantity() + quantityToReturn;
+            productRepository.updateProductQuantityNative(product.getId(), newProductQuantity);
+
+            // Xóa detail
+            orderDetailRepository.deleteOrderDetailById(detail.getId());
         }
-        orderRepository.updateOrderStatusNative(orderId, newStatus.toUpperCase());
-        return getOrderById(orderId);
+
+        // Sau đó mới xóa Order
+        orderRepository.deleteOrderById(id);
     }
 }

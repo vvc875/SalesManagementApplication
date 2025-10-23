@@ -1,7 +1,7 @@
 package com.example.sales.repository;
 
 import com.example.sales.entity.Category;
-import org.springframework.data.jpa.repository.JpaRepository; // Vẫn cần extends
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -34,10 +34,9 @@ public interface CategoryRepository extends JpaRepository<Category, String> {
     @Query(value = "UPDATE Category SET name = :name WHERE category_id = :id", nativeQuery = true)
     void updateCategory(@Param("id") String id, @Param("name") String name);
 
-    @Query(value = "SELECT category_id FROM Category ORDER BY category_id DESC", nativeQuery = true)
+    @Query(value = "SELECT category_id FROM Category ORDER BY CAST(SUBSTRING(category_id, 4) AS UNSIGNED) DESC", nativeQuery = true)
     List<String> findAllIdsDesc();
 
     @Query(value = "SELECT * FROM Category c WHERE LOWER(c.name) = LOWER(:name)", nativeQuery = true)
     Optional<Category> findByNameIgnoreCase(@Param("name") String name);
-
 }

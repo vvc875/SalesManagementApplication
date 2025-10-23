@@ -13,6 +13,8 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -20,30 +22,28 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // Cấu hình quyền truy cập cho các request HTTP
+                // Cấu hình CORS (thay cho @CrossOrigin)
+                .cors(withDefaults()) // (Bạn nên có 1 Bean CorsConfigurationSource)
+
+                /**
+                 * ===============================================
+                 * THÊM DÒNG NÀY ĐỂ TẮT BẢO VỆ CSRF
+                 * ===============================================
+                 */
+                .csrf(csrf -> csrf.disable())
+
                 .authorizeHttpRequests(authorize -> authorize
-                        // Cho phép tất cả mọi người truy cập vào các đường dẫn này
-                        .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
-                        .requestMatchers("/login").permitAll()
-                        // Yêu cầu tất cả các request còn lại phải được xác thực (đã đăng nhập)
+                        .requestMatchers("/login", "/css/**", "/images/**", "/JS/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                // Cấu hình form đăng nhập
                 .formLogin(form -> form
-                        // DÒNG QUAN TRỌNG NHẤT:
-                        // Báo cho Spring Security biết trang đăng nhập của bạn ở đâu
                         .loginPage("/login")
-
-                        // URL mà form của bạn sẽ POST tới (th:action="@{/login}")
-                        .loginProcessingUrl("/login")
-
-                        // Sau khi đăng nhập thành công, chuyển đến trang "/" (trang chủ)
                         .defaultSuccessUrl("/page_home", true)
-                        .permitAll() // Cho phép tất cả mọi người truy cập form này
+                        .permitAll()
                 )
-                // Cấu hình đăng xuất
                 .logout(logout -> logout
-                        .logoutSuccessUrl("/login?logout") // Chuyển hướng đến trang login với thông báo logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/login?logout")
                         .permitAll()
                 );
 

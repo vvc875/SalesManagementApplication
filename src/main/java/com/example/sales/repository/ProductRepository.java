@@ -13,23 +13,25 @@ import java.util.Optional;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, String> {
 
-    @Query(value = "SELECT p.*, c.name as category_name FROM Product p LEFT JOIN Category c ON p.category_id = c.category_id",
-            nativeQuery = true)
+    // SỬA: Bỏ JOIN. JPA sẽ tự xử lý mapping object Category khi cần.
+    @Query(value = "SELECT * FROM Product", nativeQuery = true)
     List<Product> getAllProduct();
 
-    @Query(value = "SELECT p.*, c.name as category_name FROM Product p LEFT JOIN Category c ON p.category_id = c.category_id WHERE p.product_id = :id",
-            nativeQuery = true)
+    // SỬA: Bỏ JOIN.
+    @Query(value = "SELECT * FROM Product WHERE product_id = :id", nativeQuery = true)
     Optional<Product> getProductById(@Param("id") String id);
 
     @Modifying
-    @Query(value = "INSERT INTO Product (product_id, name, price, quantity, description, category_id) " +
-            "VALUES (:id, :name, :price, :quantity, :description, :categoryId)", nativeQuery = true)
+    @Query(value = """
+            INSERT INTO Product (product_id, name, price, quantity, description, category_id)
+            VALUES (:id, :name, :price, :quantity, :description, :categoryId)
+            """, nativeQuery = true)
     void insertProduct(@Param("id") String id,
-                             @Param("name") String name,
-                             @Param("price") double price,
-                             @Param("quantity") int quantity,
-                             @Param("description") String description,
-                             @Param("categoryId") String categoryId);
+                       @Param("name") String name,
+                       @Param("price") double price,
+                       @Param("quantity") int quantity,
+                       @Param("description") String description,
+                       @Param("categoryId") String categoryId);
 
     @Modifying
     @Query(value = "UPDATE Product SET " +
@@ -40,18 +42,18 @@ public interface ProductRepository extends JpaRepository<Product, String> {
             "category_id = :categoryId " +
             "WHERE product_id = :id", nativeQuery = true)
     void updateProduct(@Param("id") String id,
-                             @Param("name") String name,
-                             @Param("price") double price,
-                             @Param("quantity") int quantity,
-                             @Param("description") String description,
-                             @Param("categoryId") String categoryId);
+                       @Param("name") String name,
+                       @Param("price") double price,
+                       @Param("quantity") int quantity,
+                       @Param("description") String description,
+                       @Param("categoryId") String categoryId);
 
     @Query(value = "SELECT COUNT(*) FROM Product WHERE product_id = :id", nativeQuery = true)
     int countById(@Param("id") String id);
 
     @Modifying
     @Query(value = "DELETE FROM Product WHERE product_id = :id", nativeQuery = true)
-    void deleteProductById(@Param("id") String id); // Renamed
+    void deleteProductById(@Param("id") String id);
 
     @Query(value = "SELECT product_id FROM Product ORDER BY CAST(SUBSTRING(product_id, 3) AS UNSIGNED) DESC", nativeQuery = true)
     List<String> findAllIdsDesc();
@@ -71,7 +73,4 @@ public interface ProductRepository extends JpaRepository<Product, String> {
     @Modifying
     @Query(value = "UPDATE Product SET quantity = :quantity WHERE product_id = :id", nativeQuery = true)
     void updateProductQuantityNative(@Param("id") String id, @Param("quantity") int quantity);
-
-
-
 }

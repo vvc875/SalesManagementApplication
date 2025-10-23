@@ -38,6 +38,7 @@ public class ProductController {
 
     @PostMapping
     Product addProduct(@RequestBody ProductCreationDTO productDTO){
+
         return productService.addProduct(productDTO);
     }
 
@@ -49,7 +50,7 @@ public class ProductController {
     @DeleteMapping("/{productId}")
     String  deleteProduct(@PathVariable("productId") String productId){
         productService.deleteProduct(productId);
-        return "delete product successfully";
+        return "Delete product successfully";
     }
 
     @GetMapping("/price/less")

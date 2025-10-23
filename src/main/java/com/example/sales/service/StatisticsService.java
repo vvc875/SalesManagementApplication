@@ -43,11 +43,11 @@ public class StatisticsService {
 
     // Thống kê sản phẩm bán chạy
     public List<BestSellingProductDTO> getBestSellingProducts(int limit) {
-        return orderDetailRepository.findBestSellingProducts(PageRequest.of(0, limit));
+        return orderDetailRepository.findBestSellingProducts(limit);
     }
 
     // Thống kê khách hàng mua nhiều nhất
     public List<TopCustomerDTO> getTopCustomers(int limit) {
-        return orderRepository.findTopCustomer(PageRequest.of(0, limit));
+        return orderRepository.findTopCustomer(limit);
     }
 }
