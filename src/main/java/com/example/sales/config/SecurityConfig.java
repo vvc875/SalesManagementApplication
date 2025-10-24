@@ -23,13 +23,8 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 // Cấu hình CORS (thay cho @CrossOrigin)
-                .cors(withDefaults()) // (Bạn nên có 1 Bean CorsConfigurationSource)
+                .cors(withDefaults())
 
-                /**
-                 * ===============================================
-                 * THÊM DÒNG NÀY ĐỂ TẮT BẢO VỆ CSRF
-                 * ===============================================
-                 */
                 .csrf(csrf -> csrf.disable())
 
                 .authorizeHttpRequests(authorize -> authorize
@@ -67,3 +62,5 @@ public class SecurityConfig {
                 .orElseThrow(() -> new UsernameNotFoundException("Không tìm thấy người dùng: " + username));
     }
 }
+
+
