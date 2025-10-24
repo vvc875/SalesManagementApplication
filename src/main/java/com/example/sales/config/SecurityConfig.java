@@ -40,6 +40,10 @@ public class SecurityConfig {
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/login?logout")
                         .permitAll()
+                )
+
+                .csrf(csrf -> csrf
+                        .ignoringRequestMatchers("/orders/**", "/product/**", "/customer/**",  "/category/**",  "/employee/**")
                 );
 
         return http.build();

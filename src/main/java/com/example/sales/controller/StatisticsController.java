@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/statistics")
@@ -20,6 +21,11 @@ public class StatisticsController {
 
     @Autowired
     private StatisticsService statisticsService;
+
+    @GetMapping("/dashboard")
+    public Map<String, Object> getDashboardStats() {
+        return statisticsService.getDashboardData(); 
+    }
 
     @GetMapping("/revenue/daily")
     public List<RevenueByDateDTO> getDailyRevenue(
@@ -39,12 +45,16 @@ public class StatisticsController {
     }
 
     @GetMapping("/products/best-selling")
-    public List<BestSellingProductDTO> getBestSellingProducts(@RequestParam(defaultValue = "10") int limit) {
-        return statisticsService.getBestSellingProducts(limit);
+    public List<BestSellingProductDTO> getBestSellingProducts(
+            @RequestParam(defaultValue = "10") int limit,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        return statisticsService.getBestSellingProducts(limit, date); 
     }
 
     @GetMapping("/customers/top")
-    public List<TopCustomerDTO> getTopCustomers(@RequestParam(defaultValue = "10") int limit) {
-        return statisticsService.getTopCustomers(limit);
+    public List<TopCustomerDTO> getTopCustomers(
+            @RequestParam(defaultValue = "10") int limit,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        return statisticsService.getTopCustomers(limit, date);
     }
 }

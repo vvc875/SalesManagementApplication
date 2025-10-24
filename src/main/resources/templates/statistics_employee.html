@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thống kê Doanh thu (Nhân viên)</title>
+    <link rel="icon" type="image/png" th:href="@{/images/shopping-cart.png}">
+    <link rel="stylesheet" th:href="@{/CSS/statistics.css}">
+</head>
+<body>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="page-header">
+                <h1>Thống kê Doanh thu (Theo nhân viên)</h1>
+                <a th:href="@{/page_home}" class="back-btn">← Quay lại Trang chủ</a>
+            </div>
+
+            <!-- Nút bấm để tải báo cáo -->
+            <section class="form-section">
+                <p>Nhấn nút dưới đây để xem báo cáo doanh thu theo từng nhân viên.</p>
+                <button id="loadReportBtn" class="btn-primary">Xem báo cáo</button>
+            </section>
+
+            <!-- Bảng kết quả -->
+            <section class="results-section">
+                <h2>Kết quả</h2>
+                <div id="resultsContainer">
+                    <p class="no-data-message">Vui lòng nhấn nút "Xem báo cáo".</p>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>© 2025 Quản lý bán hàng - Nhóm 6</p>
+        </div>
+    </footer>
+
+    <script th:src="@{/JS/statistics_employee.js}"></script>
+</body>
+</html>

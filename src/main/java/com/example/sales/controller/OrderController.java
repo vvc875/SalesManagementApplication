@@ -4,9 +4,11 @@ import com.example.sales.dto.OrderCreationDTO;
 import com.example.sales.entity.Order;
 import com.example.sales.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -17,9 +19,12 @@ public class OrderController {
     private OrderService orderService;
 
     @GetMapping
-    public List<Order> getAllOrders(){
-
-        return orderService.getAllOrder();
+    public List<Order> getAllOrders(
+            @RequestParam(required = false) 
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) 
+            LocalDate date 
+    ) {
+        return orderService.getAllOrders(date); 
     }
 
     @GetMapping("/{orderId}")

@@ -3,7 +3,7 @@ USE sale_management;
 
 SET FOREIGN_KEY_CHECKS = 0;
 
-CREATE TABLE account(
+CREATE TABLE account (
     username VARCHAR(255) PRIMARY KEY,
     password VARCHAR(255)
 );

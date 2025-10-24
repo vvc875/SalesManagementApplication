@@ -23,6 +23,21 @@ document.addEventListener('DOMContentLoaded', function () {
     addCategoryBtn.addEventListener("click", handleAddClick);
     saveCategoryBtn.addEventListener("click", handleSaveCategory);
     closeFormBtn.addEventListener("click", closeFormPanel);
+    
+    const dropdownToggle = document.querySelector('.dropdown-toggle');
+    const dropdown = document.querySelector('.dropdown');
+
+    if(dropdownToggle && dropdown) {
+        dropdownToggle.addEventListener('click', function(event){
+            event.preventDefault();
+            dropdown.classList.toggle('active');
+        })
+    }
+
+    window.addEventListener('click', function(e){
+        if(dropdown && !dropdown.contains(e.target) && !dropdownToggle.contains(e.target)) {
+            dropdown.classList.remove('active');
+    }
 
     resultContainer.addEventListener('click', function(event) {
         const target = event.target;
@@ -32,6 +47,8 @@ document.addEventListener('DOMContentLoaded', function () {
         if (target.classList.contains('delete-btn')) {
             handleDeleteClick(target.dataset.id);
         }
+    })
+
     });
 
     function openFormPanel() {
@@ -206,9 +223,13 @@ document.addEventListener('DOMContentLoaded', function () {
                     <td>${category.id}</td>
                     <td>${category.name}</td>
                     <td class="action-buttons">
-                        <button class="edit-btn" data-id="${category.id}">Sửa</button>
-                        <button class="delete-btn" data-id="${category.id}">Xóa</button>
-                    </td>
+                        <button class="edit-btn" data-id="${category.id}" title="Sửa sản phẩm">
+                            <i class="fas fa-pen"></i>
+                        </button>
+                        <button class="delete-btn" data-id="${category.id}" title="Xóa sản phẩm">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>   
                 </tr>
             `;
         });

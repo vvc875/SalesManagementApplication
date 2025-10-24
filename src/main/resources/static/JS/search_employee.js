@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const searchButton = document.getElementById("searchButton");
     const showAllButton = document.getElementById("showAllButton");
     const resultContainer = document.getElementById("result");
-
+    
     const formPanel = document.getElementById("employeeFormPanel");
     const formTitle = document.getElementById("formTitle");
     const addEmployeeBtn = document.getElementById("addEmployeeBtn");
@@ -30,21 +30,45 @@ document.addEventListener('DOMContentLoaded', function () {
     saveEmployeeBtn.addEventListener("click", handleSaveEmployee);
     closeFormBtn.addEventListener("click", closeFormPanel);
 
-    resultContainer.addEventListener('click', function(event) {
-        const target = event.target;
-        if (target.classList.contains('edit-btn')) {
-            handleEditClick(target.dataset.id);
+    const dropdownToggle = document.querySelector('.dropdown-toggle');
+    const dropdown = document.querySelector('.dropdown');
+
+    if(dropdownToggle && dropdown) {
+        dropdownToggle.addEventListener('click', function(event){
+            event.preventDefault();
+            dropdown.classList.toggle('active');
+        });
+    }
+
+    window.addEventListener(
+        'click', 
+        function(e){
+            if(dropdown && !dropdown.contains(e.target) && !dropdownToggle.contains(e.target)) {
+                dropdown.classList.remove('active');
+            }
         }
-        if (target.classList.contains('delete-btn')) {
-            handleDeleteClick(target.dataset.id);
+    );
+
+    resultContainer.addEventListener(
+            'click', 
+            function(event) {
+            const target = event.target;
+            if (target.classList.contains('edit-btn')) {
+                handleEditClick(target.dataset.id);
+            }
+            if (target.classList.contains('delete-btn')) {
+                handleDeleteClick(target.dataset.id);
+            }
         }
-    });
+    );
+
+    
 
     function openFormPanel() {
-        formPanel.classList.add('active');
+        formPanel.classList.add('active'); 
     }
     function closeFormPanel() {
-        formPanel.classList.remove('active');
+        formPanel.classList.remove('active'); 
     }
 
     function handleAddClick() {
@@ -82,7 +106,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function handleEditClick(id) {
-        closeFormPanel();
+        closeFormPanel(); 
         setTimeout(() => {
             fetch(`http://localhost:8080/employee/${id}`)
                 .then(response => response.json())
@@ -103,43 +127,43 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function addEmployee(employeeData) {
-        fetch('http://localhost:8080/employee', {
-            method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(employeeData)
+        fetch('http://localhost:8080/employee', { 
+            method: 'POST', headers: { 'Content-Type': 'application/json' }, 
+            body: JSON.stringify(employeeData) 
         })
-        .then(response => {
-            if (!response.ok) throw new Error('Thêm mới thất bại!');
-            closeFormPanel();
-            fetchAllEmployees();
+        .then(response => { 
+            if (!response.ok) throw new Error('Thêm mới thất bại!'); 
+            closeFormPanel(); 
+            fetchAllEmployees(); 
         })
         .catch(error => console.error("Lỗi:", error));
     }
 
     function updateEmployee(id, employeeData) {
-        fetch(`http://localhost:8080/employee/${id}`, {
-            method: 'PUT', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(employeeData)
+        fetch(`http://localhost:8080/employee/${id}`, { 
+            method: 'PUT', headers: { 'Content-Type': 'application/json' }, 
+            body: JSON.stringify(employeeData) 
         })
-        .then(response => {
-            if (!response.ok) throw new Error('Cập nhật thất bại!');
-            closeFormPanel(); fetchAllEmployees();
+        .then(response => { 
+            if (!response.ok) throw new Error('Cập nhật thất bại!'); 
+            closeFormPanel(); fetchAllEmployees(); 
         })
         .catch(error => console.error("Lỗi:", error));
     }
 
     function deleteEmployee(id) {
-        fetch(`http://localhost:8080/employee/${id}`, {
-            method: 'DELETE'
+        fetch(`http://localhost:8080/employee/${id}`, { 
+            method: 'DELETE' 
         })
-        .then(response => {
-            if (!response.ok) throw new Error('Xóa thất bại!');
-            fetchAllEmployees();
+        .then(response => { 
+            if (!response.ok) throw new Error('Xóa thất bại!'); 
+            fetchAllEmployees(); 
         })
         .catch(error => console.error("Lỗi:", error));
     }
 
     function handleSearchTypeChange() {
-        const type = this.value;
+        const type = this.value; 
 
         const keywordGroup = document.getElementById('keyword-input-group');
         const searchButtonsGroup = document.getElementById('search-buttons');
@@ -147,7 +171,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (type) {
             keywordGroup.classList.remove('hidden');
             searchButtonsGroup.classList.remove('hidden');
-        }
+        } 
         else {
             keywordGroup.classList.add('hidden');
             searchButtonsGroup.classList.add('hidden');
@@ -166,6 +190,12 @@ document.addEventListener('DOMContentLoaded', function () {
         let apiUrl = '';
         if (searchType === 'id') {
             apiUrl = `http://localhost:8080/employee/${encodeURIComponent(keyword)}`;
+        } 
+        else if (searchType === 'nameOrEmail'){ 
+            apiUrl = `http://localhost:8080/employee/search?keyword=${encodeURIComponent(keyword)}`;
+        }
+        else if (searchType === 'phone'){
+            apiUrl = `http://localhost:8080/employee/phone?keyword=${encodeURIComponent(keyword)}`;
         }
 
         fetch(apiUrl)
@@ -187,7 +217,7 @@ document.addEventListener('DOMContentLoaded', function () {
         searchTypeSelect.value = "";
         handleSearchTypeChange.call(searchTypeSelect);
         resultContainer.innerHTML = "<p>Đang tải danh sách nhân viên...</p>";
-
+        
         fetch('http://localhost:8080/employee')
         .then(response => {
             if (!response.ok) throw new Error("Lỗi khi gọi API");
@@ -197,14 +227,14 @@ document.addEventListener('DOMContentLoaded', function () {
         .catch(error => {
             console.error("Lỗi:", error);
             resultContainer.innerHTML = "<p style='color:red;'>❌ Không thể tải danh sách nhân viên!</p>";
-        });
+        });     
     }
-
+    
     function displayEmployees(employees, title) {
         if (!employees || employees.length === 0) {
             resultContainer.innerHTML = `<h3>${title}</h3><p>❌ Không tìm thấy nhân viên nào khớp!</p>`;
             return;
-        }
+        }   
         let html = `<h3>${title} (${employees.length} kết quả)</h3>`;
         html += `
             <table>
@@ -236,8 +266,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     <td>${employee.hireDate || 'N/A'}</td>
                     <td>${employee.address || 'N/A'}</td>
                     <td class="action-buttons">
-                        <button class="edit-btn" data-id="${employee.id}">Sửa</button>
-                        <button class="delete-btn" data-id="${employee.id}">Xóa</button>
+                        <button class="edit-btn" data-id="${employee.id}" title="Sửa sản phẩm">
+                            <i class="fas fa-pen"></i>
+                        </button>
+                        <button class="delete-btn" data-id="${employee.id}" title="Xóa sản phẩm">
+                            <i class="fas fa-trash"></i>
+                        </button>
                     </td>
                 </tr>
             `;
