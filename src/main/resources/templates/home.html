@@ -5,26 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trang chủ - Hệ thống quản lý bán hàng</title>
     <link rel="icon" type="image/png" th:href="@{/images/shopping-cart.png}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" th:href="@{/CSS/style.css}">
 </head>
 <body>
 
     <header class="header">
         <div class="header-top-bar">
-            <div class="container">
-        <h1>HỆ THỐNG QUẢN LÝ BÁN HÀNG</h1>
-            </div>
+            <h1>HỆ THỐNG QUẢN LÝ BÁN HÀNG</h1>  
         </div>
         <nav class="header-nav-bar">
             <div class="container">
                 <ul>
-                    <li><a th:href="@{/page_home}" class="active-if-on-page">Trang chủ</a></li>
-                    <li><a th:href="@{/page_product}" class="active-if-on-page">Sản phẩm</a></li>
-                    <li><a th:href="@{/page_category}" class="active-if-on-page">Danh mục sản phẩm</a></li>
-                    <li><a th:href="@{/page_customer}" class="active-if-on-page">Khách hàng</a></li>
-                    <li><a th:href="@{/page_employee}" class="active-if-on-page">Nhân viên</a></li>
-                    <li><a th:href="@{/page_order}" class="active-if-on-page">Hóa đơn</a></li>
-                    <li><a th:href="@{/page_statistics}" class="active-if-on-page">Thống kê</a></li>
+                    <li><a th:href="@{/page_home}" class="active">Trang chủ</a></li>
+                    <li><a th:href="@{/page_product}">Sản phẩm</a></li>
+                    <li><a th:href="@{/page_category}">Danh mục sản phẩm</a></li>
+                    <li><a th:href="@{/page_customer}">Khách hàng</a></li>
+                    <li><a th:href="@{/page_employee}">Nhân viên</a></li>
+                    <li><a th:href="@{/page_order}">Hóa đơn</a></li>
+                    <li class="dropdown">
+                        <a href="javascript:void(0);" class="dropdown-toggle">
+                            Thống kê <i class="fas fa-chevron-down arrow-icon"></i>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a th:href="@{/page_statistics_revenue}">Doanh thu (Ngày/Tháng)</a></li>
+                            <li><a th:href="@{/page_statistics_employee}">Doanh thu (Nhân viên)</a></li>
+                            <li><a th:href="@{/page_statistics_BestSellingProduct}">Sản phẩm bán chạy</a></li>
+                            <li><a th:href="@{/page_statistics_TopCustomers}">Khách hàng mua nhiều</a></li>
+                        </ul>
+                    </li>
                     <li>
                         <form th:action="@{/logout}" method="post" style="display:inline;">
                             <button type="submit" class="logout-btn">Đăng xuất</button>
@@ -42,25 +51,25 @@
             <div class="dashboard-item">
                 <div class="stat-card">
                     <h3>Tổng sản phẩm</h3>
-                    <p id="total-products">120</p>
+                    <p id="total-products">...</p>
 
                 </div>
-                <a th:href="@{/page_product}" class="action-btn product-btn">Quản lý sản phẩm</a>
+                <a th:href="@{/page_statistics_BestSellingProduct}" class="action-btn product-btn">Quản lý sản phẩm</a>
             </div>
 
             <div class="dashboard-item">
                 <div class="stat-card">
                     <h3>Tổng khách hàng</h3>
-                    <p id="total-customers">45</p>
+                    <p id="total-customers">...</p>
 
                 </div>
-                <a th:href="@{/page_customer}" class="action-btn customer-btn">Quản lý khách hàng</a>
+                <a th:href="@{/page_statistics_TopCustomers}" class="action-btn customer-btn">Quản lý khách hàng</a>
             </div>
 
             <div class="dashboard-item">
                 <div class="stat-card">
                     <h3>Hóa đơn hôm nay</h3>
-                    <p id="today-invoices">8</p>
+                    <p id="today-invoices">...</p>
 
                 </div>
                 <a th:href="@{/page_order}" class="action-btn order-btn">Quản lý hóa đơn</a>
@@ -69,10 +78,10 @@
             <div class="dashboard-item">
                 <div class="stat-card">
                     <h3>Doanh thu (VND)</h3>
-                    <p id="today-revenue">15,200,000</p>
+                    <p id="today-revenue">...</p>
 
                 </div>
-                <a th:href="@{/page_statistics}" class="action-btn report-btn">Xem thống kê</a>
+                <a th:href="@{/page_statistics_revenue}" class="action-btn report-btn">Xem thống kê</a>
             </div>
 
         </div> 
@@ -86,6 +95,6 @@
         </div>
     </footer>
 
-    <!-- <script src="JS/script.js"></script> -->
+<script th:src="@{/JS/script.js}"></script>
 </body>
 </html>

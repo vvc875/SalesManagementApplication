@@ -45,6 +45,10 @@ public class SecurityConfig {
                 .logout(logout -> logout
                         .logoutSuccessUrl("/login?logout") // Chuyển hướng đến trang login với thông báo logout
                         .permitAll()
+                )
+
+                .csrf(csrf -> csrf
+                        .ignoringRequestMatchers("/orders/**", "/product/**", "/customer/**",  "/category/**",  "/employee/**")
                 );
 
         return http.build();

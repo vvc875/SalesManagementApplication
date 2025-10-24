@@ -25,8 +25,25 @@ public class OrderService {
     @Autowired private EmployeeRepository employeeRepository;
 
     // Lấy tất cả đơn hàng hiện
-    public List<Order> getAllOrder(){
-        return orderRepository.getAllOrder();
+    public List<Order> getAllOrders(LocalDate date) {
+        if (date != null) {
+            // Gọi đúng tên hàm Repository mới
+            return orderRepository.findOrdersByDateWithDetails(date);
+        } else {
+            // Gọi đúng tên hàm Repository mới
+            return orderRepository.findAllOrdersWithDetails();
+        }
+    }
+
+    public List<Order> getOrdersByDate(LocalDate date) {
+        // Gọi đúng tên hàm Repository
+        return orderRepository.findOrdersByDateWithDetails(date);
+    }
+
+    public Order getOrderByIdWithDetails(String orderId) { // Đổi tên hàm Service cho rõ
+        // Gọi đúng tên hàm Repository
+        return orderRepository.findOrderByIdWithDetails(orderId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy đơn hàng với ID: " + orderId));
     }
 
     // Lấy đơn hàng theo orderId
@@ -37,8 +54,16 @@ public class OrderService {
 
     // Sinh orderId
     private String generateOrderId() {
-        long count = orderRepository.countTotalOrder();
-        return String.format("OR%03d", count + 1);
+        List<String> ids = orderRepository.findAllIdsDesc();
+        if (ids.isEmpty()) {
+            return "OR001"; // 2. Nếu không có đơn hàng nào, bắt đầu từ 1
+        }
+
+        String lastId = ids.get(0); // Lấy ID lớn nhất (ví dụ: "OR153")
+        // Tách lấy số (bỏ 2 ký tự "OR")
+        int num = Integer.parseInt(lastId.substring(2)); 
+        // Cộng 1 và format lại (ví dụ: "OR154")
+        return String.format("OR%03d", num + 1);
     }
 
     // Tạo đơn hàng mới
@@ -66,14 +91,14 @@ public class OrderService {
         );
 
         // Fetch lại để trả về entity
-        return getOrderById(newOrderId);
+        return getOrderByIdWithDetails(newOrderId);
     }
 
     // Cập nhật tổng tiền của đơn hàng
     @Transactional
     public void updateOrderTotalAmount(String orderId) {
         // Kiểm tra đơn hàng tồn tại
-        Order order = getOrderById(orderId);
+        Order order = getOrderByIdWithDetails(orderId);
 
         List<OrderDetail> details = orderDetailRepository.findByOrderId(orderId);
         double total = details.stream()
@@ -106,6 +131,6 @@ public class OrderService {
             throw new RuntimeException("Không tìm thấy đơn hàng để cập nhật trạng thái!");
         }
         orderRepository.updateOrderStatusNative(orderId, newStatus.toUpperCase());
-        return getOrderById(orderId);
+        return getOrderByIdWithDetails(orderId);
     }
 }

@@ -55,7 +55,7 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail, String
             "JOIN product p ON od.product_id = p.product_id " +
             "GROUP BY p.product_id, p.name " +
             "ORDER BY totalSold DESC ", nativeQuery = true)
-    List<BestSellingProductDTO> findBestSellingProducts(Pageable pageable);
+    List<Object[]> findBestSellingProducts(Pageable pageable);
 
     @Modifying
     @Query(value = """
@@ -78,4 +78,19 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail, String
 
     @Query(value = "SELECT COUNT(*) FROM Order_Detail", nativeQuery = true)
     long count();
+
+    @Query(value = "SELECT p.product_id AS productId, p.name AS productName, SUM(od.quantity) AS totalSold " +
+            "FROM order_detail od " +
+            "JOIN product p ON od.product_id = p.product_id " +
+            "JOIN orders o ON od.order_id = o.order_id " + 
+            "WHERE o.order_date = :date " +                
+            "GROUP BY p.product_id, p.name " +
+            "ORDER BY totalSold DESC ", nativeQuery = true)
+    List<Object[]> findBestSellingProductsByDate(@Param("date") LocalDate date, Pageable pageable);
+
+    @Query(value = "SELECT COALESCE(SUM(od.quantity), 0) " +
+        "FROM order_detail od " +
+        "JOIN orders o ON od.order_id = o.order_id " +
+        "WHERE o.order_date = :date AND o.status = 'COMPLETED'", nativeQuery = true)
+    long sumTotalQuantitySoldByDate(@Param("date") LocalDate date);
 }

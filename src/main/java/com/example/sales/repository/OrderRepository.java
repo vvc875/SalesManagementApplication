@@ -18,15 +18,17 @@ import java.util.Optional;
 @Repository
 public interface OrderRepository extends JpaRepository<Order, String> {
 
-
-    @Query(value = "SELECT COUNT(*) FROM Orders", nativeQuery = true)
-    long countTotalOrder();
-
     @Query(value = "SELECT * FROM Orders WHERE order_id = :id", nativeQuery = true)
     Optional<Order> getOrderById(@Param("id") String id);
 
-    @Query(value = "SELECT * FROM Orders", nativeQuery = true)
-    List<Order> getAllOrder();
+    @Query("SELECT o FROM Order o LEFT JOIN FETCH o.customer c LEFT JOIN FETCH o.employee e WHERE o.id = :id")
+    Optional<Order> findOrderByIdWithDetails(@Param("id") String id);
+
+    @Query("SELECT o FROM Order o LEFT JOIN FETCH o.customer c LEFT JOIN FETCH o.employee e ORDER BY o.id ASC")
+    List<Order> findAllOrdersWithDetails();
+
+    @Query("SELECT o FROM Order o LEFT JOIN FETCH o.customer c LEFT JOIN FETCH o.employee e WHERE o.orderDate = :date ORDER BY o.orderDate DESC")
+    List<Order> findOrdersByDateWithDetails(@Param("date") LocalDate date);
 
     @Query(value = "SELECT COUNT(*) FROM Orders WHERE order_id = :id", nativeQuery = true)
     int countById(@Param("id") String id); // Đổi tên
@@ -93,4 +95,24 @@ public interface OrderRepository extends JpaRepository<Order, String> {
             """, nativeQuery = true)
     List<TopCustomerDTO> findTopCustomer(Pageable pageable);
 
+    @Query(value = """
+            SELECT c.customer_id, c.name, SUM(o.total_amount) AS total
+            FROM Orders o JOIN Customer c ON o.customer_id = c.customer_id
+            WHERE o.status = 'COMPLETED'
+            AND o.order_date = :date  
+            GROUP BY c.customer_id, c.name
+            ORDER BY total DESC
+            """, nativeQuery = true)
+    List<TopCustomerDTO> findTopCustomerByDate(@Param("date") LocalDate date, Pageable pageable);
+    
+    @Query(value = "SELECT COUNT(DISTINCT o.customer_id) " +
+        "FROM Orders o " +
+        "WHERE o.order_date = :date AND o.status = 'COMPLETED'", nativeQuery = true)
+    long countDistinctCustomersByDate(@Param("date") LocalDate date);
+
+    @Query(value = "SELECT COUNT(o.order_id) FROM Orders o WHERE o.order_date = :date", nativeQuery = true)
+    long countByOrderDate(@Param("date") LocalDate date);
+
+    @Query(value = "SELECT order_id FROM Orders ORDER BY CAST(SUBSTRING(order_id, 3) AS UNSIGNED) DESC", nativeQuery = true)
+    List<String> findAllIdsDesc();
 }

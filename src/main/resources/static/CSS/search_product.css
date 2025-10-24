@@ -32,6 +32,58 @@ main {
     gap: 40px; 
 }
 
+.header-nav-bar li.dropdown {
+    position: relative;
+}
+
+.header-nav-bar .arrow-icon {
+    font-size: 0.8em;
+    margin-left: 5px;
+    transition: transform 0.3s ease;
+}
+
+.header-nav-bar li.dropdown.active .arrow-icon {
+    transform: rotate(180deg);
+}
+
+.header-nav-bar .dropdown-menu {
+    display: none; 
+    position: absolute;
+    top: 100%; 
+    left: 0;
+    background-color: #343a40;
+    border-top: 2px solid #007bff;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    min-width: 250px; 
+    padding: 10px 0;
+    z-index: 1000;
+    flex-direction: column; 
+    gap: 0;
+}
+
+.header-nav-bar li.dropdown.active .dropdown-menu {
+    display: flex;
+}
+
+.header-nav-bar .dropdown-menu li {
+    width: 100%;
+}
+
+.header-nav-bar .dropdown-menu li a {
+    color: white;
+    padding: 12px 20px;
+    display: block;
+    width: 100%;
+    box-sizing: border-box; 
+    border-bottom: none; 
+    white-space: nowrap; 
+}
+
+.header-nav-bar .dropdown-menu li a:hover {
+    background-color: #007bff;
+    color: white; 
+}
+
 .header-nav-bar a {
     text-decoration: none; 
     color: white;
@@ -169,6 +221,7 @@ main {
 /* Cột phải */
 .results-panel { 
     flex-grow: 1; 
+    min-width: 0;
 }
 
 .results-header {
@@ -177,7 +230,11 @@ main {
     align-items: center; 
     margin-bottom: 20px;
 }
-.results-header h2 { margin: 0; }
+
+.results-header h2 { 
+    margin: 0; 
+}
+
 button.primary {
     background-color: #007bff; 
     color: white; border: none;
@@ -187,7 +244,10 @@ button.primary {
     cursor: pointer; 
     transition: background-color 0.2s;
 }
-button.primary:hover { background-color: #0056b3; }
+
+button.primary:hover { 
+    background-color: #0056b3; 
+}
 
 /* ================================
    Bảng kết quả và các nút Sửa/Xóa
@@ -210,7 +270,7 @@ button.primary:hover { background-color: #0056b3; }
     padding: 9px 9px; 
     border: 1px solid #e0e0e0; 
     text-align: left; 
-    white-space: nowrap;
+    white-space: nowrap; 
     vertical-align: top !important;
 }
 
@@ -222,15 +282,15 @@ button.primary:hover { background-color: #0056b3; }
     background-color: #f8f9fa; 
 }
 
+
 #result-container td:nth-child(2) {
-    white-space: normal;
     min-width: 180px; 
 }
+
 #result-container td:nth-child(5) { 
     max-width: none; 
     overflow: visible; 
     text-overflow: clip; 
-    white-space: normal;
 }
 
 
@@ -241,19 +301,25 @@ td.action-buttons {
     justify-content: center;
     align-items: flex-start !important;
     height: 100%;
-    white-space: normal;
     border: 1px solid #e0e0e0;
     background-color: transparent !important;
 }
+
 .action-buttons button {
     margin: 9px auto 9px auto;
-    padding: 5px 10px; 
-    font-size: 0.8rem; 
+    padding: 6px 8px; 
+    width: 44px; 
+    height: 32px;
+    font-size: 0.9rem; 
     border: none;
     border-radius: 4px; 
     cursor: pointer;
     white-space: nowrap; 
+    display: flex; 
+    justify-content: center;
+    align-items: center;
 }
+
 .edit-btn { 
     background-color: #ffc107; 
     color: #212529; 
@@ -274,5 +340,3 @@ td.action-buttons {
     text-align: center;
     font-size: 0.9rem;
 }
-
-

@@ -29,13 +29,38 @@ document.addEventListener("DOMContentLoaded", function () {
     saveCustomerBtn.addEventListener("click", handleSaveCustomer);
     closeFormBtn.addEventListener("click", closeFormPanel); // Gắn sự kiện cho nút đóng
 
+    const dropdownToggle = document.querySelector('.dropdown-toggle');
+    const dropdown = document.querySelector('.dropdown');
+
+    if(dropdownToggle && dropdown) {
+        dropdownToggle.addEventListener('click', function(event){
+            event.preventDefault();
+            dropdown.classList.toggle('active');
+        })
+    }
+
+    window.addEventListener('click', function(e){
+        if(dropdown && !dropdown.contains(e.target) && !dropdownToggle.contains(e.target)) {
+            dropdown.classList.remove('active');
+    }
+    });
+    
     resultContainer.addEventListener('click', function(event) {
-        const target = event.target;
-        if (target.classList.contains('edit-btn')) {
-            handleEditClick(target.dataset.id);
+        const targetButton = event.target.closest('button'); 
+        
+        if (!targetButton) return; // Không phải click vào nút
+
+        const customerId = targetButton.dataset.id;
+
+        if (targetButton.classList.contains('edit-btn')) {
+            handleEditClick(customerId);
         }
-        if (target.classList.contains('delete-btn')) {
-            handleDeleteClick(target.dataset.id);
+        if (targetButton.classList.contains('delete-btn')) {
+            handleDeleteClick(customerId);
+        }
+        if (targetButton.classList.contains('history-btn')) {
+            const customerName = targetButton.dataset.name;
+            handleHistoryClick(customerId, customerName);
         }
     });
     
@@ -132,21 +157,103 @@ document.addEventListener("DOMContentLoaded", function () {
         .catch(error => console.error("Lỗi:", error));
     }
 
-    // === CÁC HÀM TÌM KIẾM VÀ HIỂN THỊ ===
-function handleSearchTypeChange() {
-    const type = this.value; 
 
-    const keywordGroup = document.getElementById('keyword-input-group');
-    const searchButtonsGroup = document.getElementById('search-buttons');
-
-    if (type) {
-        keywordGroup.classList.remove('hidden');
-        searchButtonsGroup.classList.remove('hidden');
-    } else {
-        keywordGroup.classList.add('hidden');
-        searchButtonsGroup.classList.add('hidden');
-    }
+function handleHistoryClick(id, customerName) {
+    // Gọi API để lấy lịch sử đơn hàng
+    fetch(`http://localhost:8080/customer/${id}/order`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Không thể tải lịch sử đơn hàng.');
+            }
+            return response.json();
+        })
+        .then(orders => {
+            // Gọi hàm để hiển thị modal với dữ liệu đơn hàng
+            showOrderHistoryModal(orders, customerName);
+        })
+        .catch(error => {
+            console.error("Lỗi:", error);
+            alert(error.message);
+        });
 }
+
+    function showOrderHistoryModal(orders, customerName) {
+        closeOrderHistoryModal(); // Đóng modal cũ nếu đang mở
+
+        let modalHtml = `
+            <div id="historyModal" class="modal-overlay">
+                <div class="modal-content">
+                    <span class="modal-close">&times;</span>
+                    <h2>Lịch sử mua hàng: ${customerName}</h2>
+        `;
+
+        if (!orders || orders.length === 0) {
+            modalHtml += '<p>Khách hàng này chưa có đơn hàng nào.</p>';
+        } else {
+            modalHtml += `
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>ID Đơn hàng</th>
+                            <th>Ngày đặt</th>
+                            <th>Trạng thái</th>
+                            <th>Tổng tiền (VND)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            orders.forEach(order => {
+                // Định dạng lại số tiền cho đẹp
+                const formattedTotal = (order.totalAmount || 0).toLocaleString('vi-VN');
+                modalHtml += `
+                    <tr>
+                        <td>${order.id}</td>
+                        <td>${order.orderDate}</td>
+                        <td>${order.status || 'N/A'}</td>
+                        <td><strong>${formattedTotal}</strong></td>
+                    </tr>
+                `;
+            });
+            modalHtml += '</tbody></table>';
+        }
+
+        modalHtml += '</div></div>';
+        
+        // Thêm modal vào body
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+        // Gắn sự kiện để đóng modal
+        document.querySelector('#historyModal .modal-close').addEventListener('click', closeOrderHistoryModal);
+        document.getElementById('historyModal').addEventListener('click', function(e) {
+            // Chỉ đóng khi click vào lớp phủ (overlay), không phải nội dung modal
+            if (e.target === this) {
+                closeOrderHistoryModal();
+            }
+        });
+    }
+    
+    function closeOrderHistoryModal() {
+        const modal = document.getElementById('historyModal');
+        if (modal) {
+            modal.remove();
+        }
+    }
+    
+    // === CÁC HÀM TÌM KIẾM VÀ HIỂN THỊ ===
+    function handleSearchTypeChange() {
+        const type = this.value; 
+
+        const keywordGroup = document.getElementById('keyword-input-group');
+        const searchButtonsGroup = document.getElementById('search-buttons');
+
+        if (type) {
+            keywordGroup.classList.remove('hidden');
+            searchButtonsGroup.classList.remove('hidden');
+        } else {
+            keywordGroup.classList.add('hidden');
+            searchButtonsGroup.classList.add('hidden');
+        }
+    }
 
     function performSearch() {
         const searchType = searchTypeSelect.value;
@@ -160,8 +267,12 @@ function handleSearchTypeChange() {
         let apiUrl = '';
         if (searchType === 'id') {
             apiUrl = `http://localhost:8080/customer/${encodeURIComponent(keyword)}`;
-        } else { 
+        } 
+        else if (searchType === 'nameOrEmail'){ 
             apiUrl = `http://localhost:8080/customer/search?keyword=${encodeURIComponent(keyword)}`;
+        }
+        else if (searchType === 'phone'){
+            apiUrl = `http://localhost:8080/customer/phone?keyword=${encodeURIComponent(keyword)}`;
         }
 
         fetch(apiUrl)
@@ -223,8 +334,15 @@ function handleSearchTypeChange() {
                     <td>${customer.phone || 'N/A'}</td>
                     <td>${customer.address || 'N/A'}</td>
                     <td class="action-buttons">
-                        <button class="edit-btn" data-id="${customer.id}">Sửa</button>
-                        <button class="delete-btn" data-id="${customer.id}">Xóa</button>
+                        <button class="history-btn" data-id="${customer.id}" data-name="${customer.name}" title="Xem lịch sử mua hàng">
+                            <i class="fas fa-history"></i>
+                        </button>
+                        <button class="edit-btn" data-id="${customer.id}" title="Sửa sản phẩm">
+                            <i class="fas fa-pen"></i>
+                        </button>
+                        <button class="delete-btn" data-id="${customer.id}" title="Xóa sản phẩm">
+                            <i class="fas fa-trash"></i>
+                        </button>
                     </td>
                 </tr>
             `;

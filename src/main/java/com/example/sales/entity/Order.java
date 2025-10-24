@@ -24,12 +24,10 @@ public class Order {
 
     @ManyToOne(fetch = FetchType.EAGER) // <-- QUAN TRỌNG: EAGER để load luôn thông tin customer
     @JoinColumn(name = "customer_id")
-    @JsonIgnore
     private Customer customer;
 
     @ManyToOne
     @JoinColumn(name = "employee_id")
-    @JsonIgnore
     private Employee employee;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)

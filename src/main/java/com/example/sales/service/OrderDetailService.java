@@ -82,6 +82,8 @@ public class OrderDetailService {
 
         orderService.updateOrderTotalAmount(orderId);
 
+        orderService.updateOrderStatus(orderId, "COMPLETED");
+
         // Cần fetch lại savedDetail để có thông tin đầy đủ sau khi insert/update
         return orderDetailRepository.findById(savedDetail.getId()).orElse(savedDetail);
     }

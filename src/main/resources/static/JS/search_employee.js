@@ -30,15 +30,39 @@ document.addEventListener('DOMContentLoaded', function () {
     saveEmployeeBtn.addEventListener("click", handleSaveEmployee);
     closeFormBtn.addEventListener("click", closeFormPanel);
 
-    resultContainer.addEventListener('click', function(event) {
-        const target = event.target;
-        if (target.classList.contains('edit-btn')) {
-            handleEditClick(target.dataset.id);
+    const dropdownToggle = document.querySelector('.dropdown-toggle');
+    const dropdown = document.querySelector('.dropdown');
+
+    if(dropdownToggle && dropdown) {
+        dropdownToggle.addEventListener('click', function(event){
+            event.preventDefault();
+            dropdown.classList.toggle('active');
+        });
+    }
+
+    window.addEventListener(
+        'click', 
+        function(e){
+            if(dropdown && !dropdown.contains(e.target) && !dropdownToggle.contains(e.target)) {
+                dropdown.classList.remove('active');
+            }
         }
-        if (target.classList.contains('delete-btn')) {
-            handleDeleteClick(target.dataset.id);
+    );
+
+    resultContainer.addEventListener(
+            'click', 
+            function(event) {
+            const target = event.target;
+            if (target.classList.contains('edit-btn')) {
+                handleEditClick(target.dataset.id);
+            }
+            if (target.classList.contains('delete-btn')) {
+                handleDeleteClick(target.dataset.id);
+            }
         }
-    });
+    );
+
+    
 
     function openFormPanel() {
         formPanel.classList.add('active'); 
@@ -166,6 +190,12 @@ document.addEventListener('DOMContentLoaded', function () {
         let apiUrl = '';
         if (searchType === 'id') {
             apiUrl = `http://localhost:8080/employee/${encodeURIComponent(keyword)}`;
+        } 
+        else if (searchType === 'nameOrEmail'){ 
+            apiUrl = `http://localhost:8080/employee/search?keyword=${encodeURIComponent(keyword)}`;
+        }
+        else if (searchType === 'phone'){
+            apiUrl = `http://localhost:8080/employee/phone?keyword=${encodeURIComponent(keyword)}`;
         }
 
         fetch(apiUrl)
@@ -236,8 +266,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     <td>${employee.hireDate || 'N/A'}</td>
                     <td>${employee.address || 'N/A'}</td>
                     <td class="action-buttons">
-                        <button class="edit-btn" data-id="${employee.id}">Sửa</button>
-                        <button class="delete-btn" data-id="${employee.id}">Xóa</button>
+                        <button class="edit-btn" data-id="${employee.id}" title="Sửa sản phẩm">
+                            <i class="fas fa-pen"></i>
+                        </button>
+                        <button class="delete-btn" data-id="${employee.id}" title="Xóa sản phẩm">
+                            <i class="fas fa-trash"></i>
+                        </button>
                     </td>
                 </tr>
             `;
