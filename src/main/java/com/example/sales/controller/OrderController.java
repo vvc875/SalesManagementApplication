@@ -12,7 +12,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping("/orders") // Đổi thành "/orders" cho chuẩn RESTful
+@RequestMapping("/orders")
 public class OrderController {
 
     @Autowired
@@ -55,8 +55,7 @@ public class OrderController {
     @PutMapping("/{orderId}/status")
     public Order updateOrderStatus(
             @PathVariable String orderId,
-            @RequestBody String newStatus) { // Nhận trạng thái mới từ request body
-        // Gọi hàm service tương ứng để xử lý
+            @RequestBody String newStatus) {
         return orderService.updateOrderStatus(orderId, newStatus);
     }
 }

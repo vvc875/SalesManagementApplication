@@ -15,7 +15,7 @@ import java.util.Optional;
 public interface CustomerRepository extends JpaRepository<Customer, String> {
 
     @Query(value = "SELECT * FROM Customer", nativeQuery = true)
-    List<Customer> getAllCustomer(); // Giữ tên này vì Service đang gọi
+    List<Customer> getAllCustomer();
 
     @Query(value = "SELECT * FROM Customer WHERE customer_id = :id", nativeQuery = true)
     Optional<Customer> getCustomerById(@Param("id") String id);
