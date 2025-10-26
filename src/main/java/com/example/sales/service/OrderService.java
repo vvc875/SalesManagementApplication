@@ -130,7 +130,11 @@ public class OrderService {
         if (orderRepository.countById(orderId) == 0) {
             throw new RuntimeException("Không tìm thấy đơn hàng để cập nhật trạng thái!");
         }
-        orderRepository.updateOrderStatusNative(orderId, newStatus.toUpperCase());
+        orderRepository.updateOrderStatus(orderId, newStatus.toUpperCase());
         return getOrderByIdWithDetails(orderId);
+    }
+
+    public List<Order> findOrdersByDate(LocalDate date) {
+        return orderRepository.findOrderByDate(date);
     }
 }

@@ -1,18 +1,19 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener("DOMContentLoaded", () => {
+    const API_URL = "http://localhost:8080/statistics";
+    const loadReportBtn = document.getElementById("loadReportBtn");
+    const resultsContainer = document.getElementById("resultsContainer");
 
-    const API_URL = 'http://localhost:8080/statistics';
-    const loadReportBtn = document.getElementById('loadReportBtn');
-    const resultsContainer = document.getElementById('resultsContainer');
-
-    loadReportBtn.addEventListener('click', loadEmployeeRevenue);
+    loadReportBtn.addEventListener("click", loadEmployeeRevenue);
 
     async function loadEmployeeRevenue() {
         resultsContainer.innerHTML = `<p class="loading-message">Đang tải dữ liệu...</p>`;
-        
+
         try {
             const response = await fetch(`${API_URL}/revenue/by-employee`);
             if (!response.ok) {
-                throw new Error('Lỗi khi tải dữ liệu. Vui lòng kiểm tra lại server.');
+                throw new Error(
+                    "Lỗi khi tải dữ liệu. Vui lòng kiểm tra lại server."
+                );
             }
             const data = await response.json(); // Data là List<Object[]>
             renderEmployeeTable(data);
@@ -38,8 +39,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 </thead>
                 <tbody>
         `;
-        
-        data.forEach(item => {
+
+        data.forEach((item) => {
             const employeeId = item[0];
             const employeeName = item[1];
             const revenue = item[2];
@@ -51,14 +52,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 </tr>
             `;
         });
-        
+
         tableHtml += `</tbody></table>`;
         resultsContainer.innerHTML = tableHtml;
     }
-    
+
     // Hàm tiện ích
     function formatCurrency(amount) {
-        if (typeof amount !== 'number') amount = 0;
-        return amount.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+        if (typeof amount !== "number") amount = 0;
+        return amount.toLocaleString("vi-VN", {
+            style: "currency",
+            currency: "VND",
+        });
     }
 });

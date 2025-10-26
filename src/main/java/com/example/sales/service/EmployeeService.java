@@ -39,10 +39,10 @@ public class EmployeeService {
     @Transactional
     public Employee addEmployee(Employee employee) {
         String newId = generateEmployeeId();
-        employee.setId(newId); // Dùng newId
+        employee.setId(generateEmployeeId());
 
         employeeRepository.addEmployee(
-                employee.getId(), // Dùng newId
+                employee.getId(),
                 employee.getName(),
                 employee.getPosition(),
                 employee.getPhone(),
@@ -52,7 +52,7 @@ public class EmployeeService {
                 employee.getAddress()
         );
 
-        return getEmployeeById(newId); // Dùng newId
+        return getEmployeeById(newId);
     }
 
     // Cập nhật thông tin nhân viên

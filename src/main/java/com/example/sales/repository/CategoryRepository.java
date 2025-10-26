@@ -19,6 +19,9 @@ public interface CategoryRepository extends JpaRepository<Category, String> {
     @Query(value = "SELECT * FROM Category WHERE category_id = :id", nativeQuery = true)
     Optional<Category> getCategoryById(@Param("id") String id);
 
+    @Query(value = "SELECT * FROM Category c WHERE LOWER(c.name) LIKE LOWER(CONCAT('%', :nameKeyword, '%'))", nativeQuery = true)
+    List<Category> getCategoryByName(@Param("nameKeyword") String nameKeyword);
+
     @Query(value = "SELECT COUNT(*) FROM Category WHERE category_id = :id", nativeQuery = true)
     int countByIdNative(@Param("id") String id);
 

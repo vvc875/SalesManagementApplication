@@ -37,8 +37,8 @@ public class OrderDetailController {
     }
 
     @DeleteMapping("/details/{detailId}")
-    public ResponseEntity<String> deleteOrderDetail(@PathVariable String detailId) {
+    public ResponseEntity<Map<String, String>> deleteOrderDetail(@PathVariable String detailId) {
         orderDetailService.deleteOrderDetail(detailId);
-        return ResponseEntity.ok("Delete order successfully");
+        return ResponseEntity.ok(Map.of("message", "Đã xóa thành công chi tiết đơn hàng."));
     }
 }

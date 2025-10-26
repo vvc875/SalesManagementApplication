@@ -13,8 +13,6 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-import static org.springframework.security.config.Customizer.withDefaults;
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -22,23 +20,30 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // Cấu hình CORS (thay cho @CrossOrigin)
-                .cors(withDefaults())
-
-                .csrf(csrf -> csrf.disable())
-
+                // Cấu hình quyền truy cập cho các request HTTP
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/login", "/css/**", "/images/**", "/JS/**").permitAll()
+                        // Cho phép tất cả mọi người truy cập vào các đường dẫn này
+                        .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
+                        .requestMatchers("/login").permitAll()
+                        // Yêu cầu tất cả các request còn lại phải được xác thực (đã đăng nhập)
                         .anyRequest().authenticated()
                 )
+                // Cấu hình form đăng nhập
                 .formLogin(form -> form
+                        // DÒNG QUAN TRỌNG NHẤT:
+                        // Báo cho Spring Security biết trang đăng nhập của bạn ở đâu
                         .loginPage("/login")
+
+                        // URL mà form của bạn sẽ POST tới (th:action="@{/login}")
+                        .loginProcessingUrl("/login")
+
+                        // Sau khi đăng nhập thành công, chuyển đến trang "/" (trang chủ)
                         .defaultSuccessUrl("/page_home", true)
-                        .permitAll()
+                        .permitAll() // Cho phép tất cả mọi người truy cập form này
                 )
+                // Cấu hình đăng xuất
                 .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login?logout")
+                        .logoutSuccessUrl("/login?logout") // Chuyển hướng đến trang login với thông báo logout
                         .permitAll()
                 )
 
@@ -66,5 +71,3 @@ public class SecurityConfig {
                 .orElseThrow(() -> new UsernameNotFoundException("Không tìm thấy người dùng: " + username));
     }
 }
-
-

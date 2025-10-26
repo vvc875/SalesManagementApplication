@@ -23,6 +23,11 @@ public class CategoryController {
         return categoryService.getCategoryById(categoryId);
     }
 
+    @GetMapping("/search")
+    List<Category> searchCategoryByName(@RequestParam("name") String nameKeyword){
+        return categoryService.getCategoryByName(nameKeyword);
+    }
+
     @PostMapping
     public  Category addCategory(@RequestBody Category category){
         return categoryService.addCategory(category);

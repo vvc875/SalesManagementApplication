@@ -18,7 +18,7 @@ spring:
         format_sql: true
 
   thymeleaf:
-    cache: false # Tắt cache khi dev
+    cache: true
 
   sql:
     init:

@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
+// Vẫn cần extends JpaRepository để Spring quản lý Bean
 public interface CustomerRepository extends JpaRepository<Customer, String> {
 
     @Query(value = "SELECT * FROM Customer", nativeQuery = true)

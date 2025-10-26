@@ -1,8 +1,9 @@
-html, body {
+html,
+body {
     height: 100%;
     margin: 0;
     font-family: Arial, sans-serif;
-    background-color: #f4f7f6; 
+    background-color: #f4f7f6;
 }
 
 body {
@@ -11,8 +12,8 @@ body {
 }
 
 .container {
-    max-width: 1100px; 
-    margin: 0 auto;    
+    max-width: 1100px;
+    margin: 0 auto;
     padding: 0 20px;
 }
 
@@ -23,22 +24,22 @@ body {
     margin: 0;
     padding: 20px 0;
     font-size: 28px;
-    letter-spacing: 1.5px; 
+    letter-spacing: 1.5px;
 }
 
 .header-nav-bar {
-    background-color: #343a40; 
+    background-color: #343a40;
     padding: 20px 0;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .header-nav-bar ul {
-    list-style: none; 
-    margin: 0; 
+    list-style: none;
+    margin: 0;
     padding: 0;
-    display: flex; 
-    justify-content: center; 
-    gap: 40px; 
+    display: flex;
+    justify-content: center;
+    gap: 40px;
 }
 
 .header-nav-bar li.dropdown {
@@ -56,17 +57,17 @@ body {
 }
 
 .header-nav-bar .dropdown-menu {
-    display: none; 
+    display: none;
     position: absolute;
-    top: 100%; 
+    top: 100%;
     left: 0;
     background-color: #343a40;
     border-top: 2px solid #007bff;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-    min-width: 250px; 
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    min-width: 250px;
     padding: 10px 0;
     z-index: 1000;
-    flex-direction: column; 
+    flex-direction: column;
     gap: 0;
 }
 
@@ -83,27 +84,28 @@ body {
     padding: 12px 20px;
     display: block;
     width: 100%;
-    box-sizing: border-box; 
-    border-bottom: none; 
-    white-space: nowrap; 
+    box-sizing: border-box;
+    border-bottom: none;
+    white-space: nowrap;
 }
 
 .header-nav-bar .dropdown-menu li a:hover {
     background-color: #007bff;
-    color: white; 
+    color: white;
 }
 
 .header-nav-bar a {
-    text-decoration: none; 
+    text-decoration: none;
     color: white;
-    font-size: 1rem; 
-    padding: 8px 0; 
+    font-size: 1rem;
+    padding: 8px 0;
     transition: color 0.2s ease-in-out;
 }
 
-.header-nav-bar a.active, .header-nav-bar a:hover {
-    color: #007bff; 
-    border-bottom: 2px solid #007bff; 
+.header-nav-bar a.active,
+.header-nav-bar a:hover {
+    color: #007bff;
+    border-bottom: 2px solid #007bff;
 }
 
 .main-content {
@@ -113,16 +115,16 @@ body {
 
 .dashboard-grid {
     display: flex;
-    justify-content: center; 
-    gap: 25px;               
-    flex-wrap: wrap;         
+    justify-content: center;
+    gap: 25px;
+    flex-wrap: wrap;
 }
 
 .dashboard-item {
-    width: 240px;           
+    width: 240px;
     display: flex;
-    flex-direction: column; 
-    gap: 20px;               
+    flex-direction: column;
+    gap: 20px;
 }
 
 .stat-card {
@@ -131,7 +133,7 @@ body {
     border-radius: 8px;
     padding: 25px;
     text-align: center;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
 }
 
 .stat-card h3 {
@@ -160,47 +162,46 @@ body {
     text-align: center;
 }
 
-.product-btn { 
-    border-color: #3498db; 
-    color: #3498db; 
+.product-btn {
+    border-color: #3498db;
+    color: #3498db;
 }
 
-.customer-btn { 
-    border-color: #2ecc71; 
-    color: #2ecc71; 
+.customer-btn {
+    border-color: #2ecc71;
+    color: #2ecc71;
 }
 
-.order-btn { 
-    border-color: #f1c40f; 
-    color: #f1c40f; 
+.order-btn {
+    border-color: #f1c40f;
+    color: #f1c40f;
 }
 
-.report-btn { 
-    border-color: #e74c3c; 
-    color: #e74c3c; 
+.report-btn {
+    border-color: #e74c3c;
+    color: #e74c3c;
 }
 
 .action-btn:hover {
     color: white;
     transform: translateY(-3px);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.product-btn:hover { 
-    background-color: #3498db; 
+.product-btn:hover {
+    background-color: #3498db;
 }
 
-.customer-btn:hover { 
-    background-color: #2ecc71; 
+.customer-btn:hover {
+    background-color: #2ecc71;
 }
 
-.order-btn:hover { 
-    background-color: #f1c40f; 
+.order-btn:hover {
+    background-color: #f1c40f;
 }
 
-.report-btn:hover { 
-    background-color: #e74c3c; 
+.report-btn:hover {
+    background-color: #e74c3c;
 }
 
 .footer {

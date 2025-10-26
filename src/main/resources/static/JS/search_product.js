@@ -17,55 +17,59 @@ document.addEventListener("DOMContentLoaded", function () {
     const addProductBtn = document.getElementById("addProductBtn");
     const saveProductBtn = document.getElementById("saveProductBtn");
     const closeFormBtn = document.getElementById("closeFormBtn");
-    
+
     const productIdInput = document.getElementById("productId");
     const productNameInput = document.getElementById("productName");
     const productPriceInput = document.getElementById("productPrice");
     const productQuantityInput = document.getElementById("productQuantity");
-    const productDescriptionInput = document.getElementById("productDescription");
+    const productDescriptionInput =
+        document.getElementById("productDescription");
     const productCategorySelect = document.getElementById("productCategory");
 
     // === GẮN CÁC SỰ KIỆN ===
     fetchAllProducts();
 
-    searchTypeSelect.addEventListener('change', handleSearchTypeChange);
+    searchTypeSelect.addEventListener("change", handleSearchTypeChange);
     searchButton.addEventListener("click", performSearch);
     showAllButton.addEventListener("click", fetchAllProducts);
     addProductBtn.addEventListener("click", handleAddClick);
     saveProductBtn.addEventListener("click", handleSaveProduct);
     closeFormBtn.addEventListener("click", closeFormPanel);
 
-    const dropdownToggle = document.querySelector('.dropdown-toggle');
-    const dropdown = document.querySelector('.dropdown');
+    const dropdownToggle = document.querySelector(".dropdown-toggle");
+    const dropdown = document.querySelector(".dropdown");
 
-    if(dropdownToggle && dropdown) {
-        dropdownToggle.addEventListener('click', function(event){
+    if (dropdownToggle && dropdown) {
+        dropdownToggle.addEventListener("click", function (event) {
             event.preventDefault();
-            dropdown.classList.toggle('active');
-        })
+            dropdown.classList.toggle("active");
+        });
     }
 
-    window.addEventListener('click', function(e){
-        if(dropdown && !dropdown.contains(e.target) && !dropdownToggle.contains(e.target)) {
-            dropdown.classList.remove('active');
-    }
-
+    window.addEventListener("click", function (e) {
+        if (
+            dropdown &&
+            !dropdown.contains(e.target) &&
+            !dropdownToggle.contains(e.target)
+        ) {
+            dropdown.classList.remove("active");
+        }
     });
 
-    resultContainer.addEventListener('click', function(event) {
+    resultContainer.addEventListener("click", function (event) {
         const target = event.target;
-        if (target.classList.contains('edit-btn')) handleEditClick(target.dataset.id);
-        if (target.classList.contains('delete-btn')) handleDeleteClick(target.dataset.id);
+        if (target.classList.contains("edit-btn"))
+            handleEditClick(target.dataset.id);
+        if (target.classList.contains("delete-btn"))
+            handleDeleteClick(target.dataset.id);
     });
 
-
-    
     // === CÁC HÀM ĐIỀU KHIỂN GIAO DIỆN ===
     function openFormPanel() {
-        formPanel.classList.add('active'); // Thêm class 'active' để trượt xuống
+        formPanel.classList.add("active"); // Thêm class 'active' để trượt xuống
     }
     function closeFormPanel() {
-        formPanel.classList.remove('active'); // Xóa class 'active' để trượt lên
+        formPanel.classList.remove("active"); // Xóa class 'active' để trượt lên
     }
 
     // === CÁC HÀM XỬ LÝ SỰ KIỆN ===
@@ -84,8 +88,8 @@ document.addEventListener("DOMContentLoaded", function () {
         closeFormPanel();
         setTimeout(() => {
             fetch(`http://localhost:8080/product/${id}`)
-                .then(response => response.json())
-                .then(product => {
+                .then((response) => response.json())
+                .then((product) => {
                     formTitle.textContent = "Sửa Thông Tin Sản Phẩm";
                     productIdInput.value = product.id;
                     productNameInput.value = product.name;
@@ -95,7 +99,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     loadCategories(product.category.name);
                     openFormPanel();
                 })
-                .catch(error => console.error("Lỗi:", error));
+                .catch((error) => console.error("Lỗi:", error));
         }, 100);
     }
 
@@ -106,7 +110,7 @@ document.addEventListener("DOMContentLoaded", function () {
             price: parseFloat(productPriceInput.value),
             quantity: parseInt(productQuantityInput.value),
             description: productDescriptionInput.value,
-            categoryName: productCategorySelect.value
+            categoryName: productCategorySelect.value,
         };
         if (id) {
             updateProduct(id, productData);
@@ -123,82 +127,85 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // === CÁC HÀM GỌI API (CRUD) ===
     function addProduct(productData) {
-        fetch('http://localhost:8080/product', { 
-            method: 'POST', headers: { 'Content-Type': 'application/json' }, 
-            body: JSON.stringify(productData) 
+        fetch("http://localhost:8080/product", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(productData),
         })
-        .then(response => { 
-            if (!response.ok) throw new Error('Thêm mới thất bại!'); 
-            closeFormPanel(); 
-            fetchAllProducts(); 
-        })
-        .catch(error => alert('Thêm mới thất bại: ' + error.message));
+            .then((response) => {
+                if (!response.ok) throw new Error("Thêm mới thất bại!");
+                closeFormPanel();
+                fetchAllProducts();
+            })
+            .catch((error) => alert("Thêm mới thất bại: " + error.message));
     }
 
     function updateProduct(id, productData) {
-        fetch(`http://localhost:8080/product/${id}`, { 
-            method: 'PUT', headers: { 'Content-Type': 'application/json' }, 
-            body: JSON.stringify(productData) 
+        fetch(`http://localhost:8080/product/${id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(productData),
         })
-        .then(response => { 
-            if (!response.ok) throw new Error('Cập nhật thất bại!'); 
-            closeFormPanel(); fetchAllProducts(); 
-        })
-        .catch(error => alert('Cập nhật thất bại: ' + error.message));
+            .then((response) => {
+                if (!response.ok) throw new Error("Cập nhật thất bại!");
+                closeFormPanel();
+                fetchAllProducts();
+            })
+            .catch((error) => alert("Cập nhật thất bại: " + error.message));
     }
 
     function deleteProduct(id) {
-        fetch(`http://localhost:8080/product/${id}`, { 
-            method: 'DELETE' 
+        fetch(`http://localhost:8080/product/${id}`, {
+            method: "DELETE",
         })
-        .then(response => { 
-            if (!response.ok) throw new Error('Xóa thất bại!'); 
-            fetchAllProducts(); 
-        })
-        .catch(error => alert('Xóa thất bại: ' + error.message));
+            .then((response) => {
+                if (!response.ok) throw new Error("Xóa thất bại!");
+                fetchAllProducts();
+            })
+            .catch((error) => alert("Xóa thất bại: " + error.message));
     }
 
-        // === CÁC HÀM ĐIỀU KHIỂN GIAO DIỆN TÌM KIẾM ===
+    // === CÁC HÀM ĐIỀU KHIỂN GIAO DIỆN TÌM KIẾM ===
     function handleSearchTypeChange() {
         const type = this.value;
-        
-        // Luôn ẩn tất cả các ô nhập liệu trước khi quyết định hiện cái nào
-        keywordInputGroup.classList.add('hidden');
-        priceRangeInputs.classList.add('hidden');
-        
-        // Reset lại ô input đơn
-        searchInput.type = 'text';
-        searchInput.placeholder = 'Nhập từ khóa...';
-        keywordInputGroup.querySelector('label').textContent = 'Nhập từ khóa:';
 
-        if (type === 'name' || type === 'category') {
-            keywordInputGroup.classList.remove('hidden');
-        } 
-        else if (type === 'price_less') {
-            keywordInputGroup.classList.remove('hidden');
-            searchInput.type = 'number';
-            searchInput.placeholder = 'Nhập giá tối đa...';
-            keywordInputGroup.querySelector('label').textContent = 'Giá nhỏ hơn (VND):';
-        } 
-        else if (type === 'price_between') {
-            priceRangeInputs.classList.remove('hidden');
+        // Luôn ẩn tất cả các ô nhập liệu trước khi quyết định hiện cái nào
+        keywordInputGroup.classList.add("hidden");
+        priceRangeInputs.classList.add("hidden");
+
+        // Reset lại ô input đơn
+        searchInput.type = "text";
+        searchInput.placeholder = "Nhập từ khóa...";
+        keywordInputGroup.querySelector("label").textContent = "Nhập từ khóa:";
+
+        if (type === "name" || type === "category") {
+            keywordInputGroup.classList.remove("hidden");
+        } else if (type === "price_less") {
+            keywordInputGroup.classList.remove("hidden");
+            searchInput.type = "number";
+            searchInput.placeholder = "Nhập giá tối đa...";
+            keywordInputGroup.querySelector("label").textContent =
+                "Giá nhỏ hơn (VND):";
+        } else if (type === "price_between") {
+            priceRangeInputs.classList.remove("hidden");
         }
-        
+
         // Hiện các nút bấm nếu đã chọn một tiêu chí
         if (type) {
-            searchButtons.classList.remove('hidden');
+            searchButtons.classList.remove("hidden");
         } else {
-            searchButtons.classList.add('hidden');
+            searchButtons.classList.add("hidden");
         }
     }
 
     function loadCategories(selectedCategoryName = null) {
-        fetch('http://localhost:8080/category')
-            .then(response => response.json())
-            .then(categories => {
-                productCategorySelect.innerHTML = '<option value="">-- Chọn danh mục --</option>';
-                categories.forEach(cat => {
-                    const option = document.createElement('option');
+        fetch("http://localhost:8080/category")
+            .then((response) => response.json())
+            .then((categories) => {
+                productCategorySelect.innerHTML =
+                    '<option value="">-- Chọn danh mục --</option>';
+                categories.forEach((cat) => {
+                    const option = document.createElement("option");
                     option.value = cat.name;
                     option.textContent = cat.name;
                     if (cat.name === selectedCategoryName) {
@@ -212,53 +219,74 @@ document.addEventListener("DOMContentLoaded", function () {
     // === CÁC HÀM GỌI API VÀ HIỂN THỊ ===
     function performSearch() {
         const searchType = searchTypeSelect.value;
-        let apiUrl = '';
-        let title = '';
+        let apiUrl = "";
+        let title = "";
 
-        if (searchType === 'name' || searchType === 'category') {
+        if (searchType === "name" || searchType === "category") {
             const keyword = searchInput.value.trim();
-            if (!keyword) { 
-                resultContainer.innerHTML = "<p>⚠️ Vui lòng nhập từ khóa!</p>"; return; 
+            if (!keyword) {
+                resultContainer.innerHTML = "<p>⚠️ Vui lòng nhập từ khóa!</p>";
+                return;
             }
-            apiUrl = `http://localhost:8080/product/${searchType}?keyword=${encodeURIComponent(keyword)}`;
+            apiUrl = `http://localhost:8080/product/${searchType}?keyword=${encodeURIComponent(
+                keyword
+            )}`;
             title = `Kết quả cho "${keyword}"`;
-        } 
-        else if (searchType === 'price_less') {
+        } else if (searchType === "price_less") {
             const max = searchInput.value;
-            if (!max) { resultContainer.innerHTML = "<p>⚠️ Vui lòng nhập giá tối đa!</p>"; return; }
+            if (!max) {
+                resultContainer.innerHTML =
+                    "<p>⚠️ Vui lòng nhập giá tối đa!</p>";
+                return;
+            }
             apiUrl = `http://localhost:8080/product/price/less?max=${max}`;
-            title = `Sản phẩm có giá < ${parseFloat(max).toLocaleString('vi-VN')} VND`;
-        } 
-        else if (searchType === 'price_between') {
+            title = `Sản phẩm có giá < ${parseFloat(max).toLocaleString(
+                "vi-VN"
+            )} VND`;
+        } else if (searchType === "price_between") {
             const min = minPriceInput.value;
             const max = maxPriceInput.value;
-            if (!min || !max) { resultContainer.innerHTML = "<p>⚠️ Vui lòng nhập khoảng giá!</p>"; return; }
+            if (!min || !max) {
+                resultContainer.innerHTML =
+                    "<p>⚠️ Vui lòng nhập khoảng giá!</p>";
+                return;
+            }
             apiUrl = `http://localhost:8080/product/price/between?min=${min}&max=${max}`;
-            title = `Sản phẩm có giá từ ${parseFloat(min).toLocaleString('vi-VN')} đến ${parseFloat(max).toLocaleString('vi-VN')} VND`;
+            title = `Sản phẩm có giá từ ${parseFloat(min).toLocaleString(
+                "vi-VN"
+            )} đến ${parseFloat(max).toLocaleString("vi-VN")} VND`;
         }
 
         if (!apiUrl) return;
 
         fetch(apiUrl)
-            .then(response => {
-                if (!response.ok) throw new Error(`Lỗi Status: ${response.status}`);
+            .then((response) => {
+                if (!response.ok)
+                    throw new Error(`Lỗi Status: ${response.status}`);
                 return response.json();
             })
-            .then(data => displayProducts(data, title))
-            .catch(error => { console.error("Lỗi:", error); resultContainer.innerHTML = `<h3>${title}</h3><p>❌ Không tìm thấy sản phẩm nào khớp.</p>`; });
+            .then((data) => displayProducts(data, title))
+            .catch((error) => {
+                console.error("Lỗi:", error);
+                resultContainer.innerHTML = `<h3>${title}</h3><p>❌ Không tìm thấy sản phẩm nào khớp.</p>`;
+            });
     }
 
     function fetchAllProducts() {
         searchTypeSelect.value = "";
-        handleSearchTypeChange.call(searchTypeSelect); 
+        handleSearchTypeChange.call(searchTypeSelect);
         resultContainer.innerHTML = "<p>Đang tải danh sách sản phẩm...</p>";
-        fetch('http://localhost:8080/product')
-            .then(response => {
+        fetch("http://localhost:8080/product")
+            .then((response) => {
                 if (!response.ok) throw new Error("Lỗi khi gọi API");
                 return response.json();
             })
-            .then(data => displayProducts(data, "Tất cả sản phẩm"))
-            .catch(error => { console.error("Lỗi:", error); resultContainer.innerHTML = "<p style='color:red;'>❌ Lỗi tải danh sách!</p>"; });
+            .then((data) => displayProducts(data, "Tất cả sản phẩm"))
+            .catch((error) => {
+                console.error("Lỗi:", error);
+                resultContainer.innerHTML =
+                    "<p style='color:red;'>❌ Lỗi tải danh sách!</p>";
+            });
     }
 
     function displayProducts(data, title) {
@@ -279,21 +307,27 @@ document.addEventListener("DOMContentLoaded", function () {
                 </thead>
                 <tbody>
         `;
-        data.forEach(product => {
-            const categoryName = product.category ? product.category.name : 'N/A';
+        data.forEach((product) => {
+            const categoryName = product.category
+                ? product.category.name
+                : "N/A";
             html += `
                 <tr>
                     <td>${product.id}</td>
                     <td><strong>${product.name}</strong></td>
-                    <td>${product.price.toLocaleString('vi-VN')}</td>
+                    <td>${product.price.toLocaleString("vi-VN")}</td>
                     <td>${product.quantity}</td>
-                    <td>${product.description || 'N/A'}</td>
+                    <td>${product.description || "N/A"}</td>
                     <td>${categoryName}</td>
                 <td class="action-buttons">
-                    <button class="edit-btn" data-id="${product.id}" title="Sửa sản phẩm">
+                    <button class="edit-btn" data-id="${
+                        product.id
+                    }" title="Sửa sản phẩm">
                         <i class="fas fa-pen"></i>
                     </button>
-                    <button class="delete-btn" data-id="${product.id}" title="Xóa sản phẩm">
+                    <button class="delete-btn" data-id="${
+                        product.id
+                    }" title="Xóa sản phẩm">
                         <i class="fas fa-trash"></i>
                     </button>
                 </td>

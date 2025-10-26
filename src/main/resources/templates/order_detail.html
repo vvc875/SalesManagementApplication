@@ -1,68 +1,100 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đơn hàng</title>
-    <link rel="icon" type="image/png" th:href="@{/images/shopping-cart.png}">
-    <link rel="stylesheet" th:href="@{/CSS/detail.css}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-</head>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Đơn hàng</title>
+        <link
+            rel="icon"
+            type="image/png"
+            th:href="@{/images/shopping-cart.png}"
+        />
+        <link rel="stylesheet" th:href="@{/CSS/detail.css}" />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+        />
+        <meta name="_csrf" th:content="${_csrf.token}"/>
+        <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    </head>
 
-<body>
-    <div class="container">
-        <div class="header">
-            <h2>Đơn hàng: <span id="orderIdDisplay">...</span></h2>
-            <button onclick="window.location.href='/page_order'">← Quay lại danh sách</button>
-        </div>
-        
-        <div class="tabs">
-            <div class="tab active" data-tab="info">Thông tin chi tiết</div>
-            <div class="tab" data-tab="items">Hàng hóa</div>
-        </div>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h2>Đơn hàng: <span id="orderIdDisplay">...</span></h2>
+                <button onclick="window.location.href='/page_order'">
+                    ← Quay lại danh sách
+                </button>
+            </div>
 
-        <div id="infoContent" class="tab-content">
-            <h3>Thông tin chung</h3>
-            <div class="info-grid">
-                <div class="info-item"><strong>Khách hàng:</strong> <span id="customerName"></span></div>
-                <div class="info-item"><strong>Ngày đặt hàng:</strong> <span id="orderDate"></span></div>
-                <div class="info-item"><strong>Trạng thái:</strong> <span id="orderStatus"></span></div>
-                <div class="info-item"><strong>Nhân viên bán hàng:</strong> <span id="employeeName"></span></div>
-                <div class="info-item"><strong>Tổng giá trị đơn hàng:</strong> <span id="totalAmount"></span></div>
+            <div class="tabs">
+                <div class="tab active" data-tab="info">Thông tin chi tiết</div>
+                <div class="tab" data-tab="items">Hàng hóa</div>
+            </div>
+
+            <div id="infoContent" class="tab-content">
+                <h3>Thông tin chung</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <strong>Khách hàng:</strong>
+                        <span id="customerName"></span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Ngày đặt hàng:</strong>
+                        <span id="orderDate"></span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Trạng thái:</strong>
+                        <span id="orderStatus"></span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Nhân viên bán hàng:</strong>
+                        <span id="employeeName"></span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Tổng giá trị đơn hàng:</strong>
+                        <span id="totalAmount"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="itemsContent" class="tab-content" style="display: none">
+                <h3>Thông tin hàng hóa</h3>
+                <table id="itemTable">
+                    <thead>
+                        <tr>
+                            <th>Mã hàng hóa</th>
+                            <th>Diễn giải (Tên SP)</th>
+                            <th>Số lượng</th>
+                            <th>Đơn giá</th>
+                            <th>Thành tiền</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                <hr />
+                <h3>Thêm hàng hóa vào đơn</h3>
+                <form id="addProductForm" class="add-form">
+                    <div class="form-group">
+                        <label for="productId">Mã hàng hóa (ProductID):</label>
+                        <input type="text" id="productIdInput" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="quantityInput">Số lượng:</label>
+                        <input
+                            type="number"
+                            id="quantityInput"
+                            min="1"
+                            required
+                        />
+                    </div>
+                    <button type="submit" class="btn-primary">
+                        Thêm sản phẩm
+                    </button>
+                </form>
             </div>
         </div>
 
-        <div id="itemsContent" class="tab-content" style="display: none;">
-            <h3>Thông tin hàng hóa</h3>
-            <table id="itemTable">
-                <thead>
-                    <tr>
-                        <th>Mã hàng hóa</th>
-                        <th>Diễn giải (Tên SP)</th>
-                        <th>Số lượng</th>
-                        <th>Đơn giá</th>
-                        <th>Thành tiền</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    </tbody>
-            </table>
-            <hr>
-            <h3>Thêm hàng hóa vào đơn</h3>
-            <form id="addProductForm" class="add-form">
-                <div class="form-group">
-                    <label for="productId">Mã hàng hóa (ProductID):</label>
-                    <input type="text" id="productIdInput" required>
-                </div>
-                <div class="form-group">
-                    <label for="quantityInput">Số lượng:</label>
-                    <input type="number" id="quantityInput" min="1" required>
-                </div>
-                <button type="submit" class="btn-primary">Thêm sản phẩm</button>
-            </form>
-        </div>
-    </div>
-
-<script th:src="@{/JS/orderDetail.js}"></script>
-</body>
+        <script th:src="@{/JS/orderDetail.js}"></script>
+    </body>
 </html>

@@ -48,40 +48,30 @@ public class ProductService {
     //Thêm một sản phẩm mới
     @Transactional
     public Product addProduct(ProductCreationDTO productDTO) {
+        // 1. Tìm Category từ database dựa trên categoryName từ DTO
+        Category category = categoryRepository.findByNameIgnoreCase(productDTO.getCategoryName())
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy danh mục: " + productDTO.getCategoryName()));
 
-        // 1. Lấy "tên thư mục" (categoryName) từ DTO
-        String categoryName = productDTO.getCategoryName();
-
-        // 2. Dùng "tên thư mục" để tìm đối tượng Category và lấy ID
-        Category category = categoryRepository.findByNameIgnoreCase(categoryName)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy danh mục: " + categoryName));
-
-        // Lấy ID từ category object
-        String categoryId = category.getId();
-
-        // 3. Tạo đối tượng Product mới (trong bộ nhớ)
+        // 2. Tạo một đối tượng Product mới (trong bộ nhớ Java)
         Product newProduct = new Product();
         newProduct.setId(generateProductId());
         newProduct.setName(productDTO.getName());
         newProduct.setPrice(productDTO.getPrice());
         newProduct.setQuantity(productDTO.getQuantity());
         newProduct.setDescription(productDTO.getDescription());
-        newProduct.setCategory(category); // Gán object này để hàm có thể trả về
+        newProduct.setCategory(category); // Gán đối tượng Category
 
-        // 4. Gọi hàm INSERT (viết tay) với ID đã tìm được
         productRepository.insertProduct(
                 newProduct.getId(),
                 newProduct.getName(),
                 newProduct.getPrice(),
                 newProduct.getQuantity(),
                 newProduct.getDescription(),
-                categoryId  // <-- QUAN TRỌNG: Truyền ID vào đây
+                newProduct.getCategory().getId()
         );
 
-        // Trả về đối tượng Product đã tạo
         return newProduct;
     }
-
 
     // Cập nhật sản phẩm
     @Transactional

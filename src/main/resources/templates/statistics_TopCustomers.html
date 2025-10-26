@@ -1,53 +1,73 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thống kê Khách hàng</title>
-    <link rel="icon" type="image/png" th:href="@{/images/shopping-cart.png}">
-    <link rel="stylesheet" th:href="@{/CSS/statistics.css}">
-</head>
-<body>
-
-    <main class="main-content">
-        <div class="container">
-            <div class="page-header">
-                <h1>Thống kê Khách hàng Mua nhiều nhất</h1>
-                <a th:href="@{/page_home}" class="back-btn">← Quay lại Trang chủ</a>
-            </div>
-
-            <!-- Form tìm kiếm -->
-            <section class="form-section">
-                <h2>Tùy chọn báo cáo</h2>
-                <form id="topCustomersForm" class="form-container">
-                    <div class="form-group">
-                        <label for="limitInput">Số lượng (Top):</label>
-                        <input type="number" id="limitInput" value="10" min="1" max="100" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="dateInput">Theo ngày (để trống nếu xem tổng):</label>
-                        <input type="date" id="dateInput">
-                    </div>
-                    <button type="submit" class="btn-primary">Tìm kiếm</button>
-                </form>
-            </section>
-
-            <!-- Bảng kết quả -->
-            <section class="results-section">
-                <h2>Kết quả</h2>
-                <div id="resultsContainer">
-                    <p class="no-data-message">Vui lòng chọn tùy chọn và nhấn "Tìm kiếm".</p>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Thống kê Khách hàng</title>
+        <link
+            rel="icon"
+            type="image/png"
+            th:href="@{/images/shopping-cart.png}"
+        />
+        <link rel="stylesheet" th:href="@{/CSS/statistics.css}" />
+        <meta name="_csrf" th:content="${_csrf.token}"/>
+        <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    </head>
+    <body>
+        <main class="main-content">
+            <div class="container">
+                <div class="page-header">
+                    <h1>Thống kê Khách hàng Mua nhiều nhất</h1>
+                    <a th:href="@{/page_home}" class="back-btn"
+                        >← Quay lại Trang chủ</a
+                    >
                 </div>
-            </section>
-        </div>
-    </main>
 
-    <footer class="footer">
-        <div class="container">
-            <p>© 2025 Quản lý bán hàng - Nhóm 6</p>
-        </div>
-    </footer>
+                <!-- Form tìm kiếm -->
+                <section class="form-section">
+                    <h2>Tùy chọn báo cáo</h2>
+                    <form id="topCustomersForm" class="form-container">
+                        <div class="form-group">
+                            <label for="limitInput">Số lượng (Top):</label>
+                            <input
+                                type="number"
+                                id="limitInput"
+                                value="10"
+                                min="1"
+                                max="100"
+                                required
+                            />
+                        </div>
+                        <div class="form-group">
+                            <label for="dateInput"
+                                >Theo ngày (để trống nếu xem tổng):</label
+                            >
+                            <input type="date" id="dateInput" />
+                        </div>
+                        <button type="submit" class="btn-primary">
+                            Tìm kiếm
+                        </button>
+                    </form>
+                </section>
 
-    <script th:src="@{/JS/statistics_top_customers.js}"></script>
-</body>
+                <!-- Bảng kết quả -->
+                <section class="results-section">
+                    <h2>Kết quả</h2>
+                    <div id="resultsContainer">
+                        <p class="no-data-message">
+                            Vui lòng chọn tùy chọn và nhấn "Tìm kiếm".
+                        </p>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <div class="container">
+                <p>© 2025 Quản lý bán hàng - Nhóm 6</p>
+            </div>
+        </footer>
+
+        <script th:src="@{/JS/statistics_top_customers.js}"></script>
+    </body>
 </html>

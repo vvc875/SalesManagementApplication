@@ -24,6 +24,10 @@ public class CategoryService {
         return categoryRepository.getCategoryById(id).orElseThrow(()-> new RuntimeException("Không tìm thấy danh mục sản phẩm!"));
     }
 
+    public List<Category> getCategoryByName(String nameKeyword) {
+        return categoryRepository.getCategoryByName(nameKeyword);
+    }
+
     // ID tự động thêm vào
     private String generateCategoryId() {
         List<String> ids = categoryRepository.findAllIdsDesc();

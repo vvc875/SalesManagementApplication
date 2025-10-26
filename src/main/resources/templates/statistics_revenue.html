@@ -1,76 +1,98 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thống kê Doanh thu</title>
-    <link rel="icon" type="image/png" th:href="@{/images/shopping-cart.png}">
-    <!-- Liên kết đến file CSS chung -->
-    <link rel="stylesheet" th:href="@{/CSS/statistics.css}">
-</head>
-<body>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Thống kê Doanh thu</title>
+        <link
+            rel="icon"
+            type="image/png"
+            th:href="@{/images/shopping-cart.png}"
+        />
+        <!-- Liên kết đến file CSS chung -->
+        <link rel="stylesheet" th:href="@{/CSS/statistics.css}" />
+        <meta name="_csrf" th:content="${_csrf.token}"/>
+        <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    </head>
+    <body>
+        <main class="main-content">
+            <div class="container">
+                <div class="page-header">
+                    <h1>Thống kê Doanh thu</h1>
+                    <a th:href="@{/page_home}" class="back-btn"
+                        >← Quay lại Trang chủ</a
+                    >
+                </div>
 
-    <main class="main-content">
-        <div class="container">
-            <div class="page-header">
-                <h1>Thống kê Doanh thu</h1>
-                <a th:href="@{/page_home}" class="back-btn">← Quay lại Trang chủ</a>
+                <!-- Form 1: Doanh thu theo ngày -->
+                <section class="form-section">
+                    <h2>Doanh thu theo khoảng ngày</h2>
+                    <form id="dailyRevenueForm" class="form-container">
+                        <div class="form-group">
+                            <label for="startDate">Từ ngày:</label>
+                            <input type="date" id="startDate" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="endDate">Đến ngày:</label>
+                            <input type="date" id="endDate" required />
+                        </div>
+                        <button type="submit" class="btn-primary">
+                            Tìm kiếm
+                        </button>
+                    </form>
+                </section>
+
+                <!-- Kết quả 1: Bảng Doanh thu theo ngày -->
+                <section class="results-section">
+                    <h2>Kết quả (Theo ngày)</h2>
+                    <div id="dailyResultsContainer">
+                        <p class="no-data-message">
+                            Vui lòng chọn ngày để xem báo cáo.
+                        </p>
+                    </div>
+                </section>
+
+                <hr style="margin: 30px 0" />
+
+                <!-- Form 2: Doanh thu theo tháng -->
+                <section class="form-section">
+                    <h2>Doanh thu theo tháng</h2>
+                    <form id="monthlyRevenueForm" class="form-container">
+                        <div class="form-group">
+                            <label for="yearInput">Nhập năm:</label>
+                            <input
+                                type="number"
+                                id="yearInput"
+                                th:value="${#dates.year(#dates.createNow())}"
+                                min="2000"
+                                max="2100"
+                                required
+                            />
+                        </div>
+                        <button type="submit" class="btn-primary">
+                            Xem báo cáo
+                        </button>
+                    </form>
+                </section>
+
+                <!-- Kết quả 2: Bảng Doanh thu theo tháng -->
+                <section class="results-section">
+                    <h2>Kết quả (Theo tháng)</h2>
+                    <div id="monthlyResultsContainer">
+                        <p class="no-data-message">
+                            Vui lòng chọn năm để xem báo cáo.
+                        </p>
+                    </div>
+                </section>
             </div>
+        </main>
 
-            <!-- Form 1: Doanh thu theo ngày -->
-            <section class="form-section">
-                <h2>Doanh thu theo khoảng ngày</h2>
-                <form id="dailyRevenueForm" class="form-container">
-                    <div class="form-group">
-                        <label for="startDate">Từ ngày:</label>
-                        <input type="date" id="startDate" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="endDate">Đến ngày:</label>
-                        <input type="date" id="endDate" required>
-                    </div>
-                    <button type="submit" class="btn-primary">Tìm kiếm</button>
-                </form>
-            </section>
+        <footer class="footer">
+            <div class="container">
+                <p>© 2025 Quản lý bán hàng - Nhóm 6</p>
+            </div>
+        </footer>
 
-            <!-- Kết quả 1: Bảng Doanh thu theo ngày -->
-            <section class="results-section">
-                <h2>Kết quả (Theo ngày)</h2>
-                <div id="dailyResultsContainer">
-                    <p class="no-data-message">Vui lòng chọn ngày để xem báo cáo.</p>
-                </div>
-            </section>
-            
-            <hr style="margin: 30px 0;">
-
-            <!-- Form 2: Doanh thu theo tháng -->
-            <section class="form-section">
-                <h2>Doanh thu theo tháng</h2>
-                <form id="monthlyRevenueForm" class="form-container">
-                    <div class="form-group">
-                        <label for="yearInput">Nhập năm:</label>
-                        <input type="number" id="yearInput" th:value="${#dates.year(#dates.createNow())}" min="2000" max="2100" required>
-                    </div>
-                    <button type="submit" class="btn-primary">Xem báo cáo</button>
-                </form>
-            </section>
-
-            <!-- Kết quả 2: Bảng Doanh thu theo tháng -->
-            <section class="results-section">
-                <h2>Kết quả (Theo tháng)</h2>
-                <div id="monthlyResultsContainer">
-                    <p class="no-data-message">Vui lòng chọn năm để xem báo cáo.</p>
-                </div>
-            </section>
-        </div>
-    </main>
-
-    <footer class="footer">
-        <div class="container">
-            <p>© 2025 Quản lý bán hàng - Nhóm 6</p>
-        </div>
-    </footer>
-
-    <script th:src="@{/JS/statistics_revenue.js}"></script>
-</body>
+        <script th:src="@{/JS/statistics_revenue.js}"></script>
+    </body>
 </html>

@@ -1,140 +1,147 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Đăng nhập</title>
-    <link rel="icon" type="image/png" th:href="@{/images/shopping-cart.png}">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Đăng nhập</title>
+        <link
+            rel="icon"
+            type="image/png"
+            th:href="@{/images/shopping-cart.png}"
+        />
 
-    <style>
-        /* --- CSS cho trang Đăng nhập --- */
+        <style>
+            /* --- CSS cho trang Đăng nhập --- */
 
-        /* Thiết lập cơ bản cho toàn bộ trang */
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f0f2f5; /* Một màu xám rất nhạt */
-            display: flex;
-            flex-direction: column; /* Xếp các mục theo chiều dọc */
-            justify-content: center; /* Căn giữa theo chiều dọc */
-            align-items: center;     /* Căn giữa theo chiều ngang */
-            height: 100vh;           /* Chiều cao 100% màn hình */
-            margin: 0;
-        }
+            /* Thiết lập cơ bản cho toàn bộ trang */
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+                    Roboto, Helvetica, Arial, sans-serif;
+                background-color: #f0f2f5; /* Một màu xám rất nhạt */
+                display: flex;
+                flex-direction: column; /* Xếp các mục theo chiều dọc */
+                justify-content: center; /* Căn giữa theo chiều dọc */
+                align-items: center; /* Căn giữa theo chiều ngang */
+                height: 100vh; /* Chiều cao 100% màn hình */
+                margin: 0;
+            }
 
-        /* Tiêu đề "Đăng nhập hệ thống" */
-        h2 {
-            text-align: center;
-            color: #1c1e21; /* Màu tối gần như đen */
-            margin-bottom: 1.5rem; /* Khoảng cách dưới tiêu đề */
-        }
+            /* Tiêu đề "Đăng nhập hệ thống" */
+            h2 {
+                text-align: center;
+                color: #1c1e21; /* Màu tối gần như đen */
+                margin-bottom: 1.5rem; /* Khoảng cách dưới tiêu đề */
+            }
 
-        /* Khung chứa form đăng nhập */
-        form {
-            background-color: #ffffff;
-            border: 1px solid #dddfe2;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Hiệu ứng đổ bóng */
-            padding: 2rem;           /* Khoảng đệm bên trong form */
-            max-width: 400px;        /* Chiều rộng tối đa */
-            width: 100%;             /* Chiếm 100% chiều rộng (trên di động) */
-            box-sizing: border-box;  /* Giúp padding không làm tăng kích thước */
-        }
+            /* Khung chứa form đăng nhập */
+            form {
+                background-color: #ffffff;
+                border: 1px solid #dddfe2;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Hiệu ứng đổ bóng */
+                padding: 2rem; /* Khoảng đệm bên trong form */
+                max-width: 400px; /* Chiều rộng tối đa */
+                width: 100%; /* Chiếm 100% chiều rộng (trên di động) */
+                box-sizing: border-box; /* Giúp padding không làm tăng kích thước */
+            }
 
-        /* Mỗi nhóm (label + input) */
-        form div {
-            margin-bottom: 1rem; /* Khoảng cách giữa các nhóm */
-        }
+            /* Mỗi nhóm (label + input) */
+            form div {
+                margin-bottom: 1rem; /* Khoảng cách giữa các nhóm */
+            }
 
-        /* CSS cho container của nút */
-        form .button-container {
-            margin-top: 1.5rem;
-            margin-bottom: 0; /* Ghi đè margin-bottom mặc định */
-        }
+            /* CSS cho container của nút */
+            form .button-container {
+                margin-top: 1.5rem;
+                margin-bottom: 0; /* Ghi đè margin-bottom mặc định */
+            }
 
+            /* Nhãn (Tên đăng nhập, Mật khẩu) */
+            label {
+                display: block; /* Hiển thị trên một dòng riêng */
+                margin-bottom: 0.5rem;
+                font-weight: 600; /* In đậm vừa phải */
+                color: #4b4f56;
+            }
 
-        /* Nhãn (Tên đăng nhập, Mật khẩu) */
-        label {
-            display: block; /* Hiển thị trên một dòng riêng */
-            margin-bottom: 0.5rem;
-            font-weight: 600; /* In đậm vừa phải */
-            color: #4b4f56;
-        }
+            /* Các ô nhập liệu */
+            input[type="text"],
+            input[type="password"] {
+                width: 100%; /* Chiếm toàn bộ chiều rộng của form */
+                padding: 0.75rem; /* Đệm bên trong ô input */
+                border: 1px solid #ccd0d5;
+                border-radius: 6px;
+                box-sizing: border-box; /* Quan trọng! */
+                font-size: 1rem;
+            }
 
-        /* Các ô nhập liệu */
-        input[type="text"],
-        input[type="password"] {
-            width: 100%;             /* Chiếm toàn bộ chiều rộng của form */
-            padding: 0.75rem;        /* Đệm bên trong ô input */
-            border: 1px solid #ccd0d5;
-            border-radius: 6px;
-            box-sizing: border-box;  /* Quan trọng! */
-            font-size: 1rem;
-        }
+            /* Hiệu ứng khi focus vào ô input */
+            input[type="text"]:focus,
+            input[type="password"]:focus {
+                border-color: #007bff; /* Đổi màu viền khi được chọn */
+                outline: none; /* Bỏ viền outline mặc định */
+                box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25); /* Thêm bóng mờ */
+            }
 
-        /* Hiệu ứng khi focus vào ô input */
-        input[type="text"]:focus,
-        input[type="password"]:focus {
-            border-color: #007bff; /* Đổi màu viền khi được chọn */
-            outline: none; /* Bỏ viền outline mặc định */
-            box-shadow: 0 0 0 2px rgba(0,123,255,0.25); /* Thêm bóng mờ */
-        }
+            /* Nút Đăng nhập */
+            button {
+                width: 100%;
+                padding: 0.75rem;
+                border: none;
+                border-radius: 6px;
+                background-color: #007bff; /* Màu xanh dương chính */
+                color: white;
+                font-size: 1.1rem;
+                font-weight: bold;
+                cursor: pointer;
+                transition: background-color 0.3s ease; /* Hiệu ứng chuyển màu */
+            }
 
-        /* Nút Đăng nhập */
-        button {
-            width: 100%;
-            padding: 0.75rem;
-            border: none;
-            border-radius: 6px;
-            background-color: #007bff; /* Màu xanh dương chính */
-            color: white;
-            font-size: 1.1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.3s ease; /* Hiệu ứng chuyển màu */
-        }
+            /* Hiệu ứng khi di chuột qua nút */
+            button:hover {
+                background-color: #0056b3; /* Màu xanh đậm hơn */
+            }
 
-        /* Hiệu ứng khi di chuột qua nút */
-        button:hover {
-            background-color: #0056b3; /* Màu xanh đậm hơn */
-        }
+            /* CSS cho thông báo lỗi */
+            .error-message {
+                background-color: #f8d7da; /* Nền đỏ nhạt */
+                color: #721c24; /* Chữ đỏ đậm */
+                border: 1px solid #f5c6cb;
+                border-radius: 6px;
+                padding: 1rem;
+                margin-bottom: 1rem; /* Khoảng cách với form bên dưới */
+                max-width: 400px;
+                width: 100%;
+                box-sizing: border-box;
+                text-align: center; /* Căn giữa chữ */
+            }
+        </style>
+    </head>
+    <body>
+        <div th:if="${param.error}" class="error-message">
+            Tên đăng nhập hoặc mật khẩu không đúng.
+        </div>
 
-        /* CSS cho thông báo lỗi */
-        .error-message {
-            background-color: #f8d7da; /* Nền đỏ nhạt */
-            color: #721c24;           /* Chữ đỏ đậm */
-            border: 1px solid #f5c6cb;
-            border-radius: 6px;
-            padding: 1rem;
-            margin-bottom: 1rem;     /* Khoảng cách với form bên dưới */
-            max-width: 400px;
-            width: 100%;
-            box-sizing: border-box;
-            text-align: center;      /* Căn giữa chữ */
-        }
-    </style>
+        <h2>Đăng nhập hệ thống</h2>
 
-</head>
-<body>
+        <form th:action="@{/login}" method="post">
+            <div>
+                <label for="username">Tên đăng nhập:</label>
+                <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    required
+                    autofocus
+                />
+            </div>
+            <div>
+                <label for="password">Mật khẩu:</label>
+                <input type="password" id="password" name="password" required />
+            </div>
 
-<div th:if="${param.error}" class="error-message">
-    Tên đăng nhập hoặc mật khẩu không đúng.
-</div>
-
-<h2>Đăng nhập hệ thống</h2>
-
-<form th:action="@{/login}" method="post">
-    <div>
-        <label for="username">Tên đăng nhập:</label>
-        <input type="text" id="username" name="username" required autofocus>
-    </div>
-    <div>
-        <label for="password">Mật khẩu:</label>
-        <input type="password" id="password" name="password" required>
-    </div>
-
-    <div class="button-container">
-        <button type="submit">Đăng nhập</button>
-    </div>
-</form>
-
-</body>
+            <div class="button-container">
+                <button type="submit">Đăng nhập</button>
+            </div>
+        </form>
+    </body>
 </html>

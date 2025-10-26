@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     const API_BASE_URL = 'http://localhost:8080/orders';
-    
+
     const urlParams = new URLSearchParams(window.location.search);
     const orderId = urlParams.get('id');
 
@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await fetch(`${API_BASE_URL}/${orderId}/details`);
             if (!response.ok) throw new Error('Không thể tải danh sách sản phẩm.');
-            
+
             const items = await response.json();
             renderItemTable(items);
 
@@ -59,14 +59,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderItemTable(items) {
-        itemTableBody.innerHTML = ''; 
+        itemTableBody.innerHTML = '';
         if (items.length === 0) {
             itemTableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Đơn hàng này chưa có sản phẩm.</td></tr>';
             return;
         }
 
         items.forEach(item => {
-            const product = item.product || { id: 'N/A', name: 'Không rõ' }; 
+            const product = item.product || { id: 'N/A', name: 'Không rõ' };
             const subtotal = (item.quantity || 0) * (item.price || 0);
 
             const row = document.createElement('tr');
@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td>${product.id}</td>
                 <td>${product.name}</td>
                 <td>
-                    <input type="number" class="quantity-update-input" value="${item.quantity}" 
+                    <input type="number" class="quantity-update-input" value="${item.quantity}"
                            min="1" data-detail-id="${item.id}" style="width: 60px;">
                 </td>
                 <td>${formatCurrency(item.price)}</td>
@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             alert('Thêm sản phẩm thành công!');
             addProductForm.reset();
-            refreshAllData(); 
+            refreshAllData();
         } catch (error) {
             console.error('Lỗi thêm sản phẩm:', error);
             alert(error.message);
@@ -126,8 +126,8 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Số lượng phải lớn hơn 0. Nếu muốn xóa, vui lòng nhấn nút Xóa.');
             return;
         }
-        
-        const detailDTO = { quantity: newQuantity }; 
+
+        const detailDTO = { quantity: newQuantity };
 
         try {
             const response = await fetch(`${API_BASE_URL}/details/${detailId}`, {
@@ -142,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             alert('Cập nhật số lượng thành công.');
-            refreshAllData(); 
+            refreshAllData();
         } catch (error) {
             console.error('Lỗi cập nhật:', error);
             alert(error.message);
@@ -165,7 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             alert('Xóa sản phẩm thành công.');
-            refreshAllData(); 
+            refreshAllData();
         } catch (error) {
             console.error('Lỗi xóa:', error);
             alert(error.message);
@@ -210,6 +210,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     addProductForm.addEventListener('submit', handleAddProduct);
-    refreshAllData(); 
+    refreshAllData();
 
 });

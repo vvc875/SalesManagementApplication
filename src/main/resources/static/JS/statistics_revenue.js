@@ -1,40 +1,47 @@
-document.addEventListener('DOMContentLoaded', () => {
-
-    const API_URL = 'http://localhost:8080/statistics';
+document.addEventListener("DOMContentLoaded", () => {
+    const API_URL = "http://localhost:8080/statistics";
 
     // Form 1: Doanh thu theo ngày
-    const dailyForm = document.getElementById('dailyRevenueForm');
-    const startDateInput = document.getElementById('startDate');
-    const endDateInput = document.getElementById('endDate');
-    const dailyResultsContainer = document.getElementById('dailyResultsContainer');
+    const dailyForm = document.getElementById("dailyRevenueForm");
+    const startDateInput = document.getElementById("startDate");
+    const endDateInput = document.getElementById("endDate");
+    const dailyResultsContainer = document.getElementById(
+        "dailyResultsContainer"
+    );
 
     // Form 2: Doanh thu theo tháng
-    const monthlyForm = document.getElementById('monthlyRevenueForm');
-    const yearInput = document.getElementById('yearInput');
-    const monthlyResultsContainer = document.getElementById('monthlyResultsContainer');
+    const monthlyForm = document.getElementById("monthlyRevenueForm");
+    const yearInput = document.getElementById("yearInput");
+    const monthlyResultsContainer = document.getElementById(
+        "monthlyResultsContainer"
+    );
 
     // --- XỬ LÝ DOANH THU THEO NGÀY ---
-    
-    dailyForm.addEventListener('submit', async (e) => {
+
+    dailyForm.addEventListener("submit", async (e) => {
         e.preventDefault();
         const startDate = startDateInput.value;
         const endDate = endDateInput.value;
 
         if (!startDate || !endDate) {
-            alert('Vui lòng chọn cả ngày bắt đầu và ngày kết thúc.');
+            alert("Vui lòng chọn cả ngày bắt đầu và ngày kết thúc.");
             return;
         }
-        
+
         loadDailyRevenue(startDate, endDate);
     });
 
     async function loadDailyRevenue(startDate, endDate) {
         dailyResultsContainer.innerHTML = `<p class="loading-message">Đang tải dữ liệu...</p>`;
-        
+
         try {
-            const response = await fetch(`${API_URL}/revenue/daily?startDate=${startDate}&endDate=${endDate}`);
+            const response = await fetch(
+                `${API_URL}/revenue/daily?startDate=${startDate}&endDate=${endDate}`
+            );
             if (!response.ok) {
-                throw new Error('Lỗi khi tải dữ liệu. Vui lòng kiểm tra lại server.');
+                throw new Error(
+                    "Lỗi khi tải dữ liệu. Vui lòng kiểm tra lại server."
+                );
             }
             const data = await response.json();
             renderDailyTable(data);
@@ -60,13 +67,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 </thead>
                 <tbody>
         `;
-        
-        data.forEach(item => {
+
+        data.forEach((item) => {
             total += item.totalRevenue;
             tableHtml += `
                 <tr>
                     <td>${item.date}</td>
-                    <td class="col-number">${formatCurrency(item.totalRevenue)}</td>
+                    <td class="col-number">${formatCurrency(
+                        item.totalRevenue
+                    )}</td>
                 </tr>
             `;
         });
@@ -79,17 +88,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 </tr>
             </tbody>
         </table>`;
-        
+
         dailyResultsContainer.innerHTML = tableHtml;
     }
 
     // --- XỬ LÝ DOANH THU THEO THÁNG ---
-    
-    monthlyForm.addEventListener('submit', async (e) => {
+
+    monthlyForm.addEventListener("submit", async (e) => {
         e.preventDefault();
         const year = yearInput.value;
         if (!year) {
-            alert('Vui lòng nhập năm.');
+            alert("Vui lòng nhập năm.");
             return;
         }
         loadMonthlyRevenue(year);
@@ -97,11 +106,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function loadMonthlyRevenue(year) {
         monthlyResultsContainer.innerHTML = `<p class="loading-message">Đang tải dữ liệu...</p>`;
-        
+
         try {
-            const response = await fetch(`${API_URL}/revenue/monthly?year=${year}`);
+            const response = await fetch(
+                `${API_URL}/revenue/monthly?year=${year}`
+            );
             if (!response.ok) {
-                throw new Error('Lỗi khi tải dữ liệu. Vui lòng kiểm tra lại server.');
+                throw new Error(
+                    "Lỗi khi tải dữ liệu. Vui lòng kiểm tra lại server."
+                );
             }
             const data = await response.json(); // Data là List<Object[]>
             renderMonthlyTable(data);
@@ -127,8 +140,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 </thead>
                 <tbody>
         `;
-        
-        data.forEach(item => {
+
+        data.forEach((item) => {
             const month = item[0];
             const revenue = item[1];
             total += revenue;
@@ -139,7 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </tr>
             `;
         });
-        
+
         // Thêm hàng tổng cộng
         tableHtml += `
                 <tr style="font-weight: bold; background-color: #f4f7f6;">
@@ -148,25 +161,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 </tr>
             </tbody>
         </table>`;
-        
+
         monthlyResultsContainer.innerHTML = tableHtml;
     }
 
     // --- TỰ ĐỘNG CHẠY KHI TẢI TRANG (NẾU CÓ) ---
     // Kiểm tra xem trang có được chuyển đến từ trang chủ với ngày cụ thể không
     const urlParams = new URLSearchParams(window.location.search);
-    const autoStartDate = urlParams.get('startDate');
-    const autoEndDate = urlParams.get('endDate');
+    const autoStartDate = urlParams.get("startDate");
+    const autoEndDate = urlParams.get("endDate");
 
     if (autoStartDate && autoEndDate) {
         startDateInput.value = autoStartDate;
         endDateInput.value = autoEndDate;
         loadDailyRevenue(autoStartDate, autoEndDate);
     }
-    
+
     // Hàm tiện ích
     function formatCurrency(amount) {
-        if (typeof amount !== 'number') amount = 0;
-        return amount.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+        if (typeof amount !== "number") amount = 0;
+        return amount.toLocaleString("vi-VN", {
+            style: "currency",
+            currency: "VND",
+        });
     }
 });

@@ -55,7 +55,7 @@ public interface OrderRepository extends JpaRepository<Order, String> {
 
     @Modifying
     @Query(value = "UPDATE Orders SET status = :status WHERE order_id = :id", nativeQuery = true)
-    void updateOrderStatusNative(@Param("id") String id, @Param("status") String status);
+    void updateOrderStatus(@Param("id") String id, @Param("status") String status);
 
     // Lịch sử đơn hàng của khách hàng
     @Query(value = "SELECT * FROM Orders WHERE customer_id = :customerId ORDER BY order_date DESC", nativeQuery = true)
@@ -115,4 +115,7 @@ public interface OrderRepository extends JpaRepository<Order, String> {
 
     @Query(value = "SELECT order_id FROM Orders ORDER BY CAST(SUBSTRING(order_id, 3) AS UNSIGNED) DESC", nativeQuery = true)
     List<String> findAllIdsDesc();
+
+    @Query(value = "SELECT * FROM Orders WHERE DATE(order_date) = :orderDate", nativeQuery = true)
+    List<Order> findOrderByDate(@Param("orderDate") LocalDate orderDate);
 }

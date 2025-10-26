@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const addCustomerBtn = document.getElementById("addCustomerBtn");
     const saveCustomerBtn = document.getElementById("saveCustomerBtn");
     const closeFormBtn = document.getElementById("closeFormBtn");
-    
+
     const customerIdInput = document.getElementById("customerId");
     const customerNameInput = document.getElementById("customerName");
     const customerEmailInput = document.getElementById("customerEmail");
@@ -44,10 +44,10 @@ document.addEventListener("DOMContentLoaded", function () {
             dropdown.classList.remove('active');
     }
     });
-    
+
     resultContainer.addEventListener('click', function(event) {
-        const targetButton = event.target.closest('button'); 
-        
+        const targetButton = event.target.closest('button');
+
         if (!targetButton) return; // Không phải click vào nút
 
         const customerId = targetButton.dataset.id;
@@ -63,7 +63,7 @@ document.addEventListener("DOMContentLoaded", function () {
             handleHistoryClick(customerId, customerName);
         }
     });
-    
+
     // === CÁC HÀM ĐIỀU KHIỂN FORM PANEL ===
     function openFormPanel() {
         formPanel.classList.add('active'); // Thêm class 'active' để trượt xuống
@@ -130,7 +130,7 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         .then(response => {
             if (!response.ok) throw new Error('Thêm mới thất bại!');
-            closeFormPanel(); 
+            closeFormPanel();
             fetchAllCustomers();
         })
         .catch(error => console.error("Lỗi:", error));
@@ -218,7 +218,7 @@ function handleHistoryClick(id, customerName) {
         }
 
         modalHtml += '</div></div>';
-        
+
         // Thêm modal vào body
         document.body.insertAdjacentHTML('beforeend', modalHtml);
 
@@ -231,17 +231,17 @@ function handleHistoryClick(id, customerName) {
             }
         });
     }
-    
+
     function closeOrderHistoryModal() {
         const modal = document.getElementById('historyModal');
         if (modal) {
             modal.remove();
         }
     }
-    
+
     // === CÁC HÀM TÌM KIẾM VÀ HIỂN THỊ ===
     function handleSearchTypeChange() {
-        const type = this.value; 
+        const type = this.value;
 
         const keywordGroup = document.getElementById('keyword-input-group');
         const searchButtonsGroup = document.getElementById('search-buttons');
@@ -267,8 +267,8 @@ function handleHistoryClick(id, customerName) {
         let apiUrl = '';
         if (searchType === 'id') {
             apiUrl = `http://localhost:8080/customer/${encodeURIComponent(keyword)}`;
-        } 
-        else if (searchType === 'nameOrEmail'){ 
+        }
+        else if (searchType === 'nameOrEmail'){
             apiUrl = `http://localhost:8080/customer/search?keyword=${encodeURIComponent(keyword)}`;
         }
         else if (searchType === 'phone'){
@@ -291,10 +291,10 @@ function handleHistoryClick(id, customerName) {
     }
 
     function fetchAllCustomers() {
-        searchTypeSelect.value = ""; 
+        searchTypeSelect.value = "";
         handleSearchTypeChange.call(searchTypeSelect);
         resultContainer.innerHTML = "<p>Đang tải danh sách khách hàng...</p>";
-        
+
         fetch('http://localhost:8080/customer')
             .then(response => {
                 if (!response.ok) throw new Error("Lỗi khi gọi API");

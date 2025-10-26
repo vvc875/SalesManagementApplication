@@ -1,31 +1,32 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener("DOMContentLoaded", () => {
+    const API_URL = "http://localhost:8080/statistics";
+    const form = document.getElementById("bestsellingForm");
+    const limitInput = document.getElementById("limitInput");
+    const dateInput = document.getElementById("dateInput");
+    const resultsContainer = document.getElementById("resultsContainer");
 
-    const API_URL = 'http://localhost:8080/statistics';
-    const form = document.getElementById('bestsellingForm');
-    const limitInput = document.getElementById('limitInput');
-    const dateInput = document.getElementById('dateInput');
-    const resultsContainer = document.getElementById('resultsContainer');
-
-    form.addEventListener('submit', async (e) => {
+    form.addEventListener("submit", async (e) => {
         e.preventDefault();
         loadBestSellingProducts();
     });
 
     async function loadBestSellingProducts() {
         resultsContainer.innerHTML = `<p class="loading-message">Đang tải dữ liệu...</p>`;
-        
+
         const limit = limitInput.value || 10;
         const date = dateInput.value;
-        
+
         let url = `${API_URL}/products/best-selling?limit=${limit}`;
         if (date) {
             url += `&date=${date}`; // Thêm tham số date nếu có
         }
-        
+
         try {
             const response = await fetch(url);
             if (!response.ok) {
-                throw new Error('Lỗi khi tải dữ liệu. Vui lòng kiểm tra lại server.');
+                throw new Error(
+                    "Lỗi khi tải dữ liệu. Vui lòng kiểm tra lại server."
+                );
             }
             const data = await response.json(); // Data là List<BestSellingProductDTO>
             renderTable(data);
@@ -52,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </thead>
                 <tbody>
         `;
-        
+
         data.forEach((item, index) => {
             tableHtml += `
                 <tr>
@@ -63,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </tr>
             `;
         });
-        
+
         tableHtml += `</tbody></table>`;
         resultsContainer.innerHTML = tableHtml;
     }
@@ -71,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- TỰ ĐỘNG CHẠY KHI TẢI TRANG (NẾU CÓ) ---
     // Kiểm tra xem trang có được chuyển đến từ trang chủ với ngày cụ thể không
     const urlParams = new URLSearchParams(window.location.search);
-    const autoDate = urlParams.get('date');
+    const autoDate = urlParams.get("date");
 
     if (autoDate) {
         dateInput.value = autoDate;

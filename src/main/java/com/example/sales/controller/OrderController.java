@@ -33,6 +33,14 @@ public class OrderController {
         return orderService.getOrderById(orderId);
     }
 
+    @GetMapping("/date")
+    public List<Order> getOrdersByDate(
+            @RequestParam("orderDate")
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) // Định dạng ngày YYYY-MM-DD
+            LocalDate orderDate) {
+        return orderService.findOrdersByDate(orderDate);
+    }
+
     @PostMapping
     public Order createOrder(@RequestBody OrderCreationDTO orderDTO) {
         return orderService.createOrder(orderDTO);
@@ -41,6 +49,14 @@ public class OrderController {
     @DeleteMapping("/{orderId}")
     public ResponseEntity<String> deleteOrder(@PathVariable String orderId) {
         orderService.deleteOrder(orderId);
-        return ResponseEntity.ok("Delete order successfully");
+        return ResponseEntity.ok("Đã xóa thành công đơn hàng " + orderId);
+    }
+
+    @PutMapping("/{orderId}/status")
+    public Order updateOrderStatus(
+            @PathVariable String orderId,
+            @RequestBody String newStatus) { // Nhận trạng thái mới từ request body
+        // Gọi hàm service tương ứng để xử lý
+        return orderService.updateOrderStatus(orderId, newStatus);
     }
 }
