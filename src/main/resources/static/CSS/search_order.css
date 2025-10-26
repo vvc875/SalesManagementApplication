@@ -336,7 +336,7 @@ td.action-buttons {
 
 .edit-status-btn {
     background-color: #ffc107; 
-    color: #212529; /
+    color: #212529; 
 }
 .edit-status-btn:hover {
     background-color: #e0a800; /* Màu vàng đậm hơn khi hover */
