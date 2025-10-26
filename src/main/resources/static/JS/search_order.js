@@ -299,7 +299,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Chuyển trang chi tiết
     function viewOrderDetails(orderId) {
-        window.location.href = `page_order_detail.html?orderId=${orderId}`;
+        window.location.href = `page_order_detail?orderId=${orderId}`;
     }
 
     // Format tiền tệ

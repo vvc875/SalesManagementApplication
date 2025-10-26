@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const API_BASE_URL = 'http://localhost:8080/orders';
 
     const urlParams = new URLSearchParams(window.location.search);
-    const orderId = urlParams.get('id');
+    const orderId = urlParams.get('orderId');
 
     const tabs = document.querySelectorAll('.tab');
     const tabContents = document.querySelectorAll('.tab-content');

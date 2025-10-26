@@ -324,9 +324,22 @@ td.action-buttons {
     align-items: center;
 }
 
-.edit-btn {
-    background-color: #ffc107;
-    color: #212529;
+.view-details-btn {
+    background-color: #007bff; 
+    color: white;
+}
+.view-details-btn:hover {
+    background-color: #0056b3; 
+}
+
+
+
+.edit-status-btn {
+    background-color: #ffc107; 
+    color: #212529; /
+}
+.edit-status-btn:hover {
+    background-color: #e0a800; /* Màu vàng đậm hơn khi hover */
 }
 
 .delete-btn {
