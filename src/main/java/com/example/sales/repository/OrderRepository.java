@@ -28,7 +28,7 @@ public interface OrderRepository extends JpaRepository<Order, String> {
     List<Order> findAllOrdersWithDetails();
 
     @Query("SELECT o FROM Order o LEFT JOIN FETCH o.customer c LEFT JOIN FETCH o.employee e WHERE o.orderDate = :date ORDER BY o.orderDate DESC")
-    List<Order> findOrdersByDateWithDetails(@Param("date") LocalDate date);
+    List<Order> getOrderByDate(@Param("date") LocalDate date);
 
     @Query(value = "SELECT COUNT(*) FROM Orders WHERE order_id = :id", nativeQuery = true)
     int countById(@Param("id") String id); // Đổi tên

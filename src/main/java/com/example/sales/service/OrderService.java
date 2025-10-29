@@ -28,20 +28,21 @@ public class OrderService {
     public List<Order> getAllOrders(LocalDate date) {
         if (date != null) {
             // Gọi đúng tên hàm Repository mới
-            return orderRepository.findOrdersByDateWithDetails(date);
+            return orderRepository.getOrderByDate(date);
         } else {
             // Gọi đúng tên hàm Repository mới
             return orderRepository.findAllOrdersWithDetails();
         }
     }
 
+    // Tìm đơn hàng theo ngày
     public List<Order> getOrdersByDate(LocalDate date) {
-        // Gọi đúng tên hàm Repository
-        return orderRepository.findOrdersByDateWithDetails(date);
+        return orderRepository.getOrderByDate(date);
     }
 
-    public Order getOrderByIdWithDetails(String orderId) { // Đổi tên hàm Service cho rõ
-        // Gọi đúng tên hàm Repository
+    // Tìm chi tiết đơn hàng
+    public Order getOrderByIdWithDetails(String orderId) {
+
         return orderRepository.findOrderByIdWithDetails(orderId)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy đơn hàng với ID: " + orderId));
     }
@@ -56,13 +57,11 @@ public class OrderService {
     private String generateOrderId() {
         List<String> ids = orderRepository.findAllIdsDesc();
         if (ids.isEmpty()) {
-            return "OR001"; // 2. Nếu không có đơn hàng nào, bắt đầu từ 1
+            return "OR001";
         }
 
-        String lastId = ids.get(0); // Lấy ID lớn nhất (ví dụ: "OR153")
-        // Tách lấy số (bỏ 2 ký tự "OR")
-        int num = Integer.parseInt(lastId.substring(2)); 
-        // Cộng 1 và format lại (ví dụ: "OR154")
+        String lastId = ids.get(0);
+        int num = Integer.parseInt(lastId.substring(2));
         return String.format("OR%03d", num + 1);
     }
 

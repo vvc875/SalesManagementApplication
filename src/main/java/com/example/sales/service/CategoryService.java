@@ -14,16 +14,17 @@ public class CategoryService {
     @Autowired
     private CategoryRepository categoryRepository;
 
-    //Lấy tất cả danh mục sản phẩm
+    // Lấy tất cả danh mục sản phẩm
     public List<Category> getAllCategory(){
         return categoryRepository.getAllCategory();
     }
 
-    //Lấy danh mục sản phẩm theo id
+    // Tìm danh mục sản phẩm theo id
     public Category getCategoryById(String id) {
         return categoryRepository.getCategoryById(id).orElseThrow(()-> new RuntimeException("Không tìm thấy danh mục sản phẩm!"));
     }
 
+    // Tìm danh mục theo tên danh mục
     public List<Category> getCategoryByName(String nameKeyword) {
         return categoryRepository.getCategoryByName(nameKeyword);
     }
@@ -38,7 +39,7 @@ public class CategoryService {
         return String.format("CAT%02d", num + 1);
     }
 
-    //Thêm một danh mục sản phẩm mới
+    // Thêm một danh mục sản phẩm mới
     @Transactional
     public Category addCategory(Category category) {
         category.setId(generateCategoryId());
@@ -46,7 +47,7 @@ public class CategoryService {
         return category;
     }
 
-    //Cập nhật danh mục sản phẩm
+    // Cập nhật danh mục sản phẩm
     @Transactional
     public Category updateCategory(String id, Category category) {
         Category existingCategory = categoryRepository.getCategoryById(id)

@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/orders") // Tất cả thao tác đều thông qua /orders
+@RequestMapping("/orders")
 public class OrderDetailController {
 
     @Autowired

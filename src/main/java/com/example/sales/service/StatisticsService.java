@@ -77,7 +77,6 @@ public class StatisticsService {
     public List<TopCustomerDTO> getTopCustomers(int limit, LocalDate date) {
         PageRequest pageable = PageRequest.of(0, limit);
         if (date != null) {
-            // Gọi hàm repository mới (sẽ tạo ở bước 5)
             return orderRepository.findTopCustomerByDate(date, pageable);
         }
         return orderRepository.findTopCustomer(pageable);
@@ -88,15 +87,12 @@ public class StatisticsService {
     LocalDate today = LocalDate.now();
 
     // 1. Lấy TỔNG SỐ LƯỢNG sản phẩm bán được hôm nay
-    // (Chúng ta sẽ tạo hàm sumTotalQuantitySoldByDate ở Bước 3)
     long totalProductsSoldToday = orderDetailRepository.sumTotalQuantitySoldByDate(today);
     
     // 2. Lấy TỔNG KHÁCH HÀNG (duy nhất) mua hàng hôm nay
-    // (Chúng ta sẽ tạo hàm countDistinctCustomersByDate ở Bước 4)
     long totalCustomersToday = orderRepository.countDistinctCustomersByDate(today);
     
     // 3. Lấy TỔNG HÓA ĐƠN hôm nay
-    // (Hàm này bạn đã tạo ở bước trước)
     long todayInvoices = orderRepository.countByOrderDate(today);
     
     // 4. Lấy TỔNG DOANH THU hôm nay (Dùng lại hàm cũ)
@@ -105,12 +101,10 @@ public class StatisticsService {
                             .mapToDouble(RevenueByDateDTO::getTotalRevenue)
                             .sum();
 
-    // Tên các key này ("totalProductsSoldToday", "totalCustomersToday", ...)
-    // phải khớp với tệp script.js (Đã sửa lỗi)
     data.put("totalProductsSoldToday", totalProductsSoldToday);
     data.put("totalCustomersToday", totalCustomersToday);
     data.put("todayInvoices", todayInvoices);
-    data.put("revenue", todayRevenue); // Đổi tên cho rõ nghĩa
+    data.put("revenue", todayRevenue);
     
     return data;
     }
