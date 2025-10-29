@@ -17,10 +17,6 @@ import java.util.Optional;
 @Repository
 public interface OrderDetailRepository extends JpaRepository<OrderDetail, String> {
 
-//    // ID tu dong
-//    @Query(value = "SELECT MAX(CAST(SUBSTRING(order_detail_id, 3) AS UNSIGNED)) FROM order_detail ", nativeQuery = true)
-//    long count(String orderId);
-
     //Thêm sản phảm vào đơn hàng
     @Query(value = "SELECT * FROM order_detail od WHERE od.order_id = :orderId AND od.product_id = :productId", nativeQuery = true)
     Optional<OrderDetail> findByOrderIdAndProductId(@Param("orderId") String orderId, @Param("productId") String productId);
@@ -40,14 +36,6 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail, String
     //Tong so tien don hang
     @Query(value = "SELECT SUM(price * quantity) FROM order_detail WHERE order_id = :orderId", nativeQuery = true)
     Double calculateTotalAmount(@Param("orderId") String orderId);
-
-    //Thong ke doanh thu theo ngay
-    @Query(value = "SELECT order_date, SUM(total_amount) AS total " +
-            "FROM orders " +
-            "WHERE order_date BETWEEN :startDate AND :endDate " +
-            "GROUP BY order_date " +
-            "ORDER BY order_date ASC", nativeQuery = true)
-    List<Object[]> findDailyRevenue(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 
     //Top San Pham ban chay
     @Query(value = "SELECT p.product_id AS productId, p.name AS productName, SUM(od.quantity) AS totalSold " +
@@ -79,11 +67,12 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail, String
     @Query(value = "SELECT COUNT(*) FROM Order_Detail", nativeQuery = true)
     long count();
 
-    @Query(value = "SELECT p.product_id AS productId, p.name AS productName, SUM(od.quantity) AS totalSold " +
+    @Query(value = "SELECT p.product_id AS productId, p.name AS productName, " +
+            "COALESCE(SUM(od.quantity), 0) AS totalSold " +
             "FROM order_detail od " +
             "JOIN product p ON od.product_id = p.product_id " +
             "JOIN orders o ON od.order_id = o.order_id " + 
-            "WHERE o.order_date = :date " +                
+            "WHERE DATE(o.order_date) = :date " +                
             "GROUP BY p.product_id, p.name " +
             "ORDER BY totalSold DESC ", nativeQuery = true)
     List<Object[]> findBestSellingProductsByDate(@Param("date") LocalDate date, Pageable pageable);
@@ -91,6 +80,6 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail, String
     @Query(value = "SELECT COALESCE(SUM(od.quantity), 0) " +
         "FROM order_detail od " +
         "JOIN orders o ON od.order_id = o.order_id " +
-        "WHERE o.order_date = :date AND o.status = 'COMPLETED'", nativeQuery = true)
+        "WHERE DATE(o.order_date) = :date AND o.status = 'Completed'", nativeQuery = true)
     long sumTotalQuantitySoldByDate(@Param("date") LocalDate date);
 }

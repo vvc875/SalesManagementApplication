@@ -63,16 +63,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (detailButton) {
             viewOrderDetails(detailButton.dataset.id);
-        } else if (deleteButton) {
+        } 
+        else if (deleteButton) {
             handleDeleteOrder(deleteButton.dataset.id);
-        } else if (editStatusButton) { // Xử lý click nút cập nhật trạng thái
+        } 
+        else if (editStatusButton) { // Xử lý click nút cập nhật trạng thái
             handleUpdateStatusClick(editStatusButton.dataset.id); // Gọi hàm xử lý mới
         }
     });
 
     // === CÁC HÀM ĐIỀU KHIỂN FORM TẠO ĐƠN ===
-    function openFormPanel() { if(formPanel) formPanel.classList.add('active'); }
-    function closeFormPanel() { if(formPanel) formPanel.classList.remove('active'); }
+    function openFormPanel() { 
+        if(formPanel) formPanel.classList.add('active'); 
+    }
+    function closeFormPanel() { 
+        if(formPanel) formPanel.classList.remove('active'); 
+    }
 
     function handleAddClick() {
         closeFormPanel();
@@ -100,37 +106,63 @@ document.addEventListener("DOMContentLoaded", function () {
     async function createOrder(orderData) {
         const headers = { 'Content-Type': 'application/json' };
         if (csrfHeader && csrfToken) headers[csrfHeader] = csrfToken;
-        else { console.error("CSRF Headers not found for POST."); alert("Lỗi bảo mật."); return; }
+        else { 
+            console.error("CSRF Headers not found for POST."); alert("Lỗi bảo mật."); 
+            return; 
+        }
 
         try {
             const response = await fetch(API_BASE_URL, { method: 'POST', headers: headers, body: JSON.stringify(orderData) });
             if (!response.ok) {
                 const errorText = await response.text();
-                try { const errorJson = JSON.parse(errorText); throw new Error(`Tạo thất bại: ${errorJson.message || errorText}`); }
-                catch(e) { throw new Error(`Tạo thất bại (${response.status}): ${errorText}`); }
+                try { 
+                    const errorJson = JSON.parse(errorText); 
+                    throw new Error(`Tạo thất bại: ${errorJson.message || errorText}`); 
+                }
+                catch(e) { 
+                    throw new Error(`Tạo thất bại (${response.status}): ${errorText}`); 
+                }
             }
             const newOrder = await response.json();
             alert(`Đã tạo đơn hàng ${newOrder.id}. Chuyển sang trang chi tiết.`);
             closeFormPanel(); fetchAllOrders(); viewOrderDetails(newOrder.id);
-        } catch (error) { console.error("Lỗi:", error); alert(error.message); }
+        } 
+        catch (error) { 
+            console.error("Lỗi:", error); alert(error.message); 
+        }
     }
 
     // Xóa Order (DELETE /orders/{id}) - Gửi CSRF
     async function handleDeleteOrder(orderId) {
-        if (!confirm(`Xóa đơn hàng ${orderId}? Chi tiết và tồn kho sẽ cập nhật.`)) { return; }
+        if (!confirm(`Xóa đơn hàng ${orderId}? Chi tiết và tồn kho sẽ cập nhật.`)) { 
+            return; 
+        }
         const headers = {};
         if (csrfHeader && csrfToken) headers[csrfHeader] = csrfToken;
-        else { console.error("CSRF Headers not found for DELETE."); alert("Lỗi bảo mật."); return; }
+        else { 
+            console.error("CSRF Headers not found for DELETE."); 
+            alert("Lỗi bảo mật.");
+            return; 
+        }
 
         try {
             const response = await fetch(`${API_BASE_URL}/${orderId}`, { method: 'DELETE', headers: headers });
             if (!response.ok) {
                 const errorText = await response.text();
-                 try { const errorJson = JSON.parse(errorText); throw new Error(`Lỗi xóa (${response.status}): ${errorJson.message || errorText}`); }
-                 catch(e) { throw new Error(`Lỗi xóa (${response.status}): ${errorText}`); }
+                 try { 
+                    const errorJson = JSON.parse(errorText); 
+                    throw new Error(`Lỗi xóa (${response.status}): ${errorJson.message || errorText}`); 
+                }
+                 catch(e) { 
+                    throw new Error(`Lỗi xóa (${response.status}): ${errorText}`); 
+                }
             }
-            alert(`Đã xóa đơn hàng ${orderId}`); fetchAllOrders();
-        } catch (error) { console.error("Lỗi:", error); alert(error.message); }
+            alert(`Đã xóa đơn hàng ${orderId}`); 
+            fetchAllOrders();
+        } 
+        catch (error) { 
+            console.error("Lỗi:", error); alert(error.message); 
+        }
     }
 
     /**
@@ -146,7 +178,7 @@ document.addEventListener("DOMContentLoaded", function () {
              console.error("CSRF Headers not found for PUT request.");
              alert("Lỗi cấu hình bảo mật. Không thể cập nhật trạng thái.");
              return; // Dừng lại nếu thiếu token
-         }
+        }
 
         try {
             // Gọi endpoint PUT /orders/{orderId}/status
@@ -172,7 +204,8 @@ document.addEventListener("DOMContentLoaded", function () {
             alert(`Đã cập nhật trạng thái đơn hàng ${orderId} thành ${newStatus}`);
             fetchAllOrders();
 
-        } catch (error) {
+        } 
+        catch (error) {
             // Hiển thị lỗi cho người dùng
             console.error("Lỗi cập nhật trạng thái:", error);
             alert(error.message); // Hiển thị lỗi đã được xử lý ở trên
@@ -192,14 +225,19 @@ document.addEventListener("DOMContentLoaded", function () {
             keywordInputGroup.classList.remove('hidden');
             keywordInputGroup.querySelector('label').textContent = 'Nhập ID Đơn hàng:';
             searchInput.placeholder = 'ORxxx...';
-        } else if (type === 'date') {
+        } 
+        else if (type === 'date') {
             dateInputGroup.classList.remove('hidden'); // Hiện ô ngày
         }
         // Thêm các loại tìm kiếm khác nếu cần (ví dụ: customerId, employeeId)
 
         // Hiện/ẩn nút tìm kiếm
-        if (type) { searchButtonsGroup.classList.remove('hidden'); }
-        else { searchButtonsGroup.classList.add('hidden'); }
+        if (type) { 
+            searchButtonsGroup.classList.remove('hidden'); 
+        }
+        else { 
+            searchButtonsGroup.classList.add('hidden'); 
+        }
     }
 
     // Thực hiện tìm kiếm (GET)
@@ -215,7 +253,8 @@ document.addEventListener("DOMContentLoaded", function () {
             apiUrl = `${API_BASE_URL}/${encodeURIComponent(keyword)}`;
             searchTermDisplay = `ID: ${keyword}`;
             title = `Kết quả cho ${searchTermDisplay}`;
-        } else if (searchType === 'date') {
+        } 
+        else if (searchType === 'date') {
             const selectedDate = searchDateInput.value;
             if (!selectedDate) { alert("Chọn ngày."); return; }
             apiUrl = `${API_BASE_URL}/date?orderDate=${selectedDate}`; // Gọi endpoint /date
@@ -223,7 +262,10 @@ document.addEventListener("DOMContentLoaded", function () {
             title = `Kết quả cho ${searchTermDisplay}`;
         }
         // Thêm các loại tìm kiếm khác nếu cần
-        else { alert("Loại tìm kiếm không hợp lệ."); return; }
+        else { 
+            alert("Loại tìm kiếm không hợp lệ."); 
+            return; 
+        }
 
         resultContainer.innerHTML = `<p>Đang tìm ${searchTermDisplay}...</p>`;
 
@@ -272,7 +314,20 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
         let html = `<h3>${title} (${data.length})</h3>`;
-        html += `<table><thead><tr><th>ID</th><th>Khách hàng</th><th>Nhân viên</th><th>Ngày đặt</th><th>Trạng thái</th><th>Tổng tiền (VND)</th><th>Hành động</th></tr></thead><tbody>`;
+        html += `<table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Khách hàng</th>
+                            <th>Nhân viên</th>
+                            <th>Ngày đặt</th>
+                            <th>Trạng thái</th>
+                            <th>Tổng tiền (VND)</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                <tbody>
+            `;
         data.forEach(order => {
             const customerName = order.customer?.name ?? (order.customerId || 'N/A');
             const employeeName = order.employee?.name ?? (order.employeeId || 'N/A');
@@ -316,20 +371,28 @@ document.addEventListener("DOMContentLoaded", function () {
      */
     function handleUpdateStatusClick(orderId) {
         // Hiện hộp thoại yêu cầu nhập trạng thái mới
-        const currentStatus = prompt(`Nhập trạng thái mới cho đơn hàng ${orderId} (PENDING, PROCESSING, COMPLETED, CANCELLED):`);
-        // Lấy giá trị, loại bỏ khoảng trắng thừa, chuyển thành chữ hoa
-        const newStatus = currentStatus ? currentStatus.trim().toUpperCase() : null;
+        const currentStatus = prompt(`Nhập trạng thái mới cho đơn hàng ${orderId} (Pending, Processing, Completed, Cancelled):`);
+
+        //Dừng hàm nếu người dùng bấm "Cancel" (promt trả về null)
+        if(currentStatus === null) {
+            return;
+        }
+
+        const newStatus = currentStatus.trim();
+
+        let fomattedCheck = "";
+        if(newStatus) {
+            formattedCheck = newStatus.substring(0, 1).toUpperCase() + newStatus.substring(1).toLowerCase();
+        }
 
         // Kiểm tra xem người dùng có nhập gì không và có hợp lệ không
-        if (newStatus && ['PENDING', 'PROCESSING', 'COMPLETED', 'CANCELLED'].includes(newStatus)) {
+        if (newStatus && ['Pending', 'Processing', 'Completed', 'Cancelled'].includes(newStatus)) {
             // Nếu hợp lệ, gọi hàm gọi API
             updateOrderStatus(orderId, newStatus);
-        } else if(newStatus !== null) { // Chỉ báo lỗi nếu người dùng nhập gì đó sai (không phải bấm Cancel)
-            alert("Trạng thái không hợp lệ! Chỉ chấp nhận PENDING, PROCESSING, COMPLETED, CANCELLED.");
+        } 
+        else if(newStatus !== null) { // Chỉ báo lỗi nếu người dùng nhập gì đó sai (không phải bấm Cancel)
+            alert("Trạng thái không hợp lệ! Chỉ chấp nhận Pending, Processing, Completed, Cancelled.");
         }
-        // Nếu newStatus là null (người dùng bấm Cancel), không làm gì cả.
     }
-    // Hàm updateOrderStatus(orderId, newStatus) đã được định nghĩa ở trên (phần API Calls)
-
-}); // Kết thúc DOMContentLoaded
+}); 
 
