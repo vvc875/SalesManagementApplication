@@ -62,7 +62,11 @@ public interface OrderRepository extends JpaRepository<Order, String> {
     List<Order> findOrderByCustomerId(@Param("customerId") String customerId);
 
     // Thống kê doanh thu theo ngày
-    @Query(value = "SELECT DATE(o.order_date), SUM(o.total_amount) FROM Orders o WHERE o.status = 'Completed' AND DATE(o.order_date) BETWEEN :startDate AND :endDate GROUP BY DATE(o.order_date)", nativeQuery = true)
+    @Query(value = "SELECT DATE(o.order_date), SUM(o.total_amount) " +
+            "FROM Orders o " +
+            "WHERE o.status = 'Completed' AND DATE(o.order_date) BETWEEN :startDate AND :endDate " +
+            "GROUP BY DATE(o.order_date) " +
+            "ORDER BY DATE(o.order_date) ASC", nativeQuery = true)
     List<Object[]> findDailyRevenue(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 
     // Doanh thu theo tháng trong năm (ĐÃ SỬA)
