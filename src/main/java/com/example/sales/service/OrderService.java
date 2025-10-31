@@ -76,7 +76,7 @@ public class OrderService {
 
         String newOrderId = generateOrderId();
         LocalDate now = LocalDate.now();
-        String initialStatus = "PENDING";
+        String initialStatus = "Pending";
         double initialTotal = 0.0;
 
         // Gọi hàm INSERT native
@@ -129,7 +129,15 @@ public class OrderService {
         if (orderRepository.countById(orderId) == 0) {
             throw new RuntimeException("Không tìm thấy đơn hàng để cập nhật trạng thái!");
         }
-        orderRepository.updateOrderStatus(orderId, newStatus.toUpperCase());
+        String formattedStatus = newStatus;
+        if(formattedStatus != null && formattedStatus.length() > 1 && formattedStatus.startsWith("\"") && formattedStatus.endsWith("\"")) {
+            formattedStatus = formattedStatus.substring(1, formattedStatus.length() - 1);
+        }
+
+        if(formattedStatus != null && formattedStatus.isEmpty()) {
+            formattedStatus = newStatus.substring(0, 1).toUpperCase() + newStatus.substring(1).toLowerCase();
+        }
+        orderRepository.updateOrderStatus(orderId, formattedStatus);
         return getOrderByIdWithDetails(orderId);
     }
 

@@ -27,7 +27,7 @@ public interface OrderRepository extends JpaRepository<Order, String> {
     @Query("SELECT o FROM Order o LEFT JOIN FETCH o.customer c LEFT JOIN FETCH o.employee e ORDER BY o.id ASC")
     List<Order> findAllOrdersWithDetails();
 
-    @Query("SELECT o FROM Order o LEFT JOIN FETCH o.customer c LEFT JOIN FETCH o.employee e WHERE o.orderDate = :date ORDER BY o.orderDate DESC")
+    @Query(value = "SELECT * FROM Orders o WHERE DATE(o.order_date) = :date ORDER BY o.order_date DESC", nativeQuery = true)
     List<Order> getOrderByDate(@Param("date") LocalDate date);
 
     @Query(value = "SELECT COUNT(*) FROM Orders WHERE order_id = :id", nativeQuery = true)
@@ -62,14 +62,18 @@ public interface OrderRepository extends JpaRepository<Order, String> {
     List<Order> findOrderByCustomerId(@Param("customerId") String customerId);
 
     // Thống kê doanh thu theo ngày
-    @Query(value = "SELECT DATE(o.order_date), SUM(o.total_amount) FROM Orders o WHERE o.status = 'COMPLETED' AND DATE(o.order_date) BETWEEN :startDate AND :endDate GROUP BY DATE(o.order_date)", nativeQuery = true)
+    @Query(value = "SELECT DATE(o.order_date), SUM(o.total_amount) " +
+            "FROM Orders o " +
+            "WHERE o.status = 'Completed' AND DATE(o.order_date) BETWEEN :startDate AND :endDate " +
+            "GROUP BY DATE(o.order_date) " +
+            "ORDER BY DATE(o.order_date) ASC", nativeQuery = true)
     List<Object[]> findDailyRevenue(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 
     // Doanh thu theo tháng trong năm (ĐÃ SỬA)
     @Query(value = """
             SELECT MONTH(o.order_date) AS month, SUM(o.total_amount) AS total
             FROM Orders o
-            WHERE YEAR(o.order_date) = :year AND o.status = 'COMPLETED'
+            WHERE YEAR(o.order_date) = :year AND o.status = 'Completed'
             GROUP BY MONTH(o.order_date)
             ORDER BY month ASC
             """, nativeQuery = true)
@@ -79,7 +83,7 @@ public interface OrderRepository extends JpaRepository<Order, String> {
     @Query(value = """
             SELECT e.employee_id, e.name, SUM(o.total_amount) AS total
             FROM Orders o JOIN Employee e ON o.employee_id = e.employee_id
-            WHERE o.status = 'COMPLETED'
+            WHERE o.status = 'Completed'
             GROUP BY e.employee_id, e.name
             ORDER BY total DESC
             """, nativeQuery = true)
@@ -89,7 +93,7 @@ public interface OrderRepository extends JpaRepository<Order, String> {
     @Query(value = """
             SELECT c.customer_id, c.name, SUM(o.total_amount) AS total
             FROM Orders o JOIN Customer c ON o.customer_id = c.customer_id
-            WHERE o.status = 'COMPLETED'
+            WHERE o.status = 'Completed'
             GROUP BY c.customer_id, c.name
             ORDER BY total DESC
             """, nativeQuery = true)
@@ -98,8 +102,8 @@ public interface OrderRepository extends JpaRepository<Order, String> {
     @Query(value = """
             SELECT c.customer_id, c.name, SUM(o.total_amount) AS total
             FROM Orders o JOIN Customer c ON o.customer_id = c.customer_id
-            WHERE o.status = 'COMPLETED'
-            AND o.order_date = :date  
+            WHERE o.status = 'Completed'
+            AND DATE(o.order_date) = :date
             GROUP BY c.customer_id, c.name
             ORDER BY total DESC
             """, nativeQuery = true)
@@ -107,15 +111,15 @@ public interface OrderRepository extends JpaRepository<Order, String> {
     
     @Query(value = "SELECT COUNT(DISTINCT o.customer_id) " +
         "FROM Orders o " +
-        "WHERE o.order_date = :date AND o.status = 'COMPLETED'", nativeQuery = true)
+        "WHERE DATE(o.order_date) = :date AND o.status = 'Completed'", nativeQuery = true)
     long countDistinctCustomersByDate(@Param("date") LocalDate date);
 
-    @Query(value = "SELECT COUNT(o.order_id) FROM Orders o WHERE o.order_date = :date", nativeQuery = true)
+    @Query(value = "SELECT COUNT(o.order_id) FROM Orders o WHERE DATE(o.order_date) = :date", nativeQuery = true)
     long countByOrderDate(@Param("date") LocalDate date);
 
     @Query(value = "SELECT order_id FROM Orders ORDER BY CAST(SUBSTRING(order_id, 3) AS UNSIGNED) DESC", nativeQuery = true)
     List<String> findAllIdsDesc();
 
-    @Query(value = "SELECT * FROM Orders WHERE DATE(order_date) = :orderDate", nativeQuery = true)
+    @Query(value = "SELECT * FROM Orders o WHERE DATE(o.order_date) = :orderDate", nativeQuery = true)
     List<Order> findOrderByDate(@Param("orderDate") LocalDate orderDate);
 }

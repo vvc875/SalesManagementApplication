@@ -328,8 +328,14 @@ document.addEventListener("DOMContentLoaded", function () {
             <table>
                 <thead>
                     <tr>
-                        <th>ID</th><th>Tên nhân viên</th><th>Chức vụ</th><th>Lương (VND)</th>
-                        <th>Số di động</th><th>Email</th><th>Ngày vào làm</th><th>Địa chỉ</th>
+                        <th>ID</th>
+                        <th>Tên nhân viên</th>
+                        <th>Chức vụ</th>
+                        <th>Lương (VND)</th>
+                        <th>Số di động</th>
+                        <th>Email</th>
+                        <th>Ngày vào làm</th>
+                        <th>Địa chỉ</th>
                         <th>Hành động</th>
                     </tr>
                 </thead>
@@ -349,10 +355,10 @@ document.addEventListener("DOMContentLoaded", function () {
                     <td>${employee.hireDate ?? 'N/A'}</td>
                     <td>${employee.address ?? 'N/A'}</td>
                     <td class="action-buttons">
-                        <button class="edit-btn" data-id="${employee.id}" title="Sửa">
+                        <button class="edit-btn" data-id="${employee.id}" title="Sửa thông tin nhân viên">
                            <i class="fas fa-pen"></i>
                         </button>
-                        <button class="delete-btn" data-id="${employee.id}" title="Xóa">
+                        <button class="delete-btn" data-id="${employee.id}" title="Xóa nhân viên">
                            <i class="fas fa-trash"></i>
                         </button>
                     </td>

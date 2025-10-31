@@ -53,7 +53,7 @@ public class StatisticsService {
     // Thống kê sản phẩm bán chạy
     public List<BestSellingProductDTO> getBestSellingProducts(int limit, LocalDate date) {
         Pageable pageable = PageRequest.of(0, limit);
-        List<Object[]> results; // <-- Phải là List<Object[]>
+        List<Object[]> results; 
 
         if (date != null) {
             results = orderDetailRepository.findBestSellingProductsByDate(date, pageable);

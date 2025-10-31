@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", function () {
     showAllButton.addEventListener("click", fetchAllCustomers);
     addCustomerBtn.addEventListener("click", handleAddClick);
     saveCustomerBtn.addEventListener("click", handleSaveCustomer);
-    closeFormBtn.addEventListener("click", closeFormPanel); // Gắn sự kiện cho nút đóng
+    closeFormBtn.addEventListener("click", closeFormPanel); 
 
     const dropdownToggle = document.querySelector('.dropdown-toggle');
     const dropdown = document.querySelector('.dropdown');
@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", function () {
     resultContainer.addEventListener('click', function(event) {
         const targetButton = event.target.closest('button');
 
-        if (!targetButton) return; // Không phải click vào nút
+        if (!targetButton) return; 
 
         const customerId = targetButton.dataset.id;
 
@@ -66,16 +66,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // === CÁC HÀM ĐIỀU KHIỂN FORM PANEL ===
     function openFormPanel() {
-        formPanel.classList.add('active'); // Thêm class 'active' để trượt xuống
+        formPanel.classList.add('active'); 
     }
     function closeFormPanel() {
-        formPanel.classList.remove('active'); // Xóa class 'active' để trượt lên
+        formPanel.classList.remove('active'); 
     }
 
     // === CÁC HÀM XỬ LÝ SỰ KIỆN ===
     function handleAddClick() {
-        closeFormPanel(); // Đóng form cũ nếu đang mở
-        setTimeout(() => { // Thêm độ trễ nhỏ để hiệu ứng mượt hơn
+        closeFormPanel(); 
+        setTimeout(() => { 
             document.getElementById("customerForm").reset();
             formTitle.textContent = "Thêm Khách Hàng Mới";
             customerIdInput.value = "";
@@ -84,7 +84,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function handleEditClick(id) {
-        closeFormPanel(); // Đóng form cũ nếu đang mở
+        closeFormPanel(); 
         setTimeout(() => {
             fetch(`http://localhost:8080/customer/${id}`)
                 .then(response => response.json())
@@ -203,7 +203,6 @@ function handleHistoryClick(id, customerName) {
                     <tbody>
             `;
             orders.forEach(order => {
-                // Định dạng lại số tiền cho đẹp
                 const formattedTotal = (order.totalAmount || 0).toLocaleString('vi-VN');
                 modalHtml += `
                     <tr>
@@ -218,14 +217,9 @@ function handleHistoryClick(id, customerName) {
         }
 
         modalHtml += '</div></div>';
-
-        // Thêm modal vào body
         document.body.insertAdjacentHTML('beforeend', modalHtml);
-
-        // Gắn sự kiện để đóng modal
         document.querySelector('#historyModal .modal-close').addEventListener('click', closeOrderHistoryModal);
         document.getElementById('historyModal').addEventListener('click', function(e) {
-            // Chỉ đóng khi click vào lớp phủ (overlay), không phải nội dung modal
             if (e.target === this) {
                 closeOrderHistoryModal();
             }
@@ -318,8 +312,12 @@ function handleHistoryClick(id, customerName) {
             <table>
                 <thead>
                     <tr>
-                        <th>ID</th><th>Tên Khách Hàng</th><th>Email</th>
-                        <th>Số điện thoại</th><th>Địa chỉ</th><th>Hành động</th>
+                        <th>ID</th>
+                        <th>Tên Khách Hàng</th>
+                        <th>Email</th>
+                        <th>Số điện thoại</th>
+                        <th>Địa chỉ</th>
+                        <th>Hành động</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -337,10 +335,10 @@ function handleHistoryClick(id, customerName) {
                         <button class="history-btn" data-id="${customer.id}" data-name="${customer.name}" title="Xem lịch sử mua hàng">
                             <i class="fas fa-history"></i>
                         </button>
-                        <button class="edit-btn" data-id="${customer.id}" title="Sửa sản phẩm">
+                        <button class="edit-btn" data-id="${customer.id}" title="Sửa thông tin khách hàng">
                             <i class="fas fa-pen"></i>
                         </button>
-                        <button class="delete-btn" data-id="${customer.id}" title="Xóa sản phẩm">
+                        <button class="delete-btn" data-id="${customer.id}" title="Xóa khách hàng">
                             <i class="fas fa-trash"></i>
                         </button>
                     </td>
